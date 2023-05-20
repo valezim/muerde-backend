@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Service {
+  idService   Int     @id @unique(map: "idService_UNIQUE") @default(autoincrement())
+  title       String  @db.VarChar(250)
+  description String? @db.VarChar(250)
+  image       String? @db.VarChar(250)
+  catalogId   Int
+  catalog     Catalog @relation(fields: [catalogId], references: [idCatalog], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([catalogId], map: "catalogId_idx")
+}
+
+model Catalog {
+  idCatalog Int       @unique(map: "idCatalog_UNIQUE") @default(autoincrement())
+  type      String    @db.VarChar(250)
+  services  Service[]
+  Product   Product[]
+}
+
+model Product {
+  idProduct   Int     @id @unique(map: "idProduct_UNIQUE") @default(autoincrement())
+  title       String  @db.VarChar(250)
+  description String? @db.VarChar(250)
+  image       String? @db.VarChar(250)
+  price       Decimal @db.Decimal(9, 2)
+  tags        String? @db.VarChar(250)
+  recipeId    Int
+  recipe      Recipe  @relation(fields: [recipeId], references: [idRecipe], onDelete: NoAction, onUpdate: NoAction)
+
+  catalogId Int
+  catalog   Catalog       @relation(fields: [catalogId], references: [idCatalog], onDelete: NoAction, onUpdate: NoAction)
+  sales     SaleProduct[]
+
+  @@index([recipeId], map: "recipeId_idx")
+  @@index([catalogId], map: "catalogId_idx")
+}
+
+model Sale {
+  idSale   Int           @id @unique(map: "idSale_UNIQUE") @default(autoincrement())
+  date     DateTime?     @db.DateTime(0)
+  state    String        @db.VarChar(250)
+  userId   Int
+  user     User          @relation(fields: [userId], references: [idUser], onDelete: NoAction, onUpdate: NoAction)
+  products SaleProduct[]
+  Review   Review[]
+
+  @@index([userId], map: "userId_idx")
+}
+
+model SaleProduct {
+  saleId    Int
+  sale      Sale    @relation(fields: [saleId], references: [idSale], onDelete: NoAction, onUpdate: NoAction)
+  productId Int
+  product   Product @relation(fields: [productId], references: [idProduct], onDelete: NoAction, onUpdate: NoAction)
+  quantity  Int
+
+  @@id([saleId, productId])
+}
+
+model Review {
+  idReview    Int     @id @unique(map: "idReview_UNIQUE") @default(autoincrement())
+  score       Int
+  description String? @db.VarChar(250)
+  userId      Int
+  user        User    @relation(fields: [userId], references: [idUser], onDelete: NoAction, onUpdate: NoAction)
+  saleId      Int
+  sale        Sale    @relation(fields: [saleId], references: [idSale], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([userId], map: "userId_idx")
+  @@index([saleId], map: "saleId_idx")
+}
+
+model Recipe {
+  idRecipe               Int                @unique(map: "idRecipe_UNIQUE") @default(autoincrement())
+  name                   String             @db.VarChar(250)
+  instructions           String             @db.VarChar(250)
+  preparationTimeMinutes Int
+  Product                Product[]
+  RecipeIngredient       RecipeIngredient[]
+}
+
+model Ingredient {
+  idIngredient              Int                         @unique(map: "idIngredient_UNIQUE") @default(autoincrement())
+  name                      String                      @db.VarChar(250)
+  unit                      String                      @db.VarChar(250)
+  lastPurchaseCost          Decimal                     @db.Decimal(9, 2)
+  totalQuantity             Int
+  PurchaseIngredientHistory PurchaseIngredientHistory[]
+  RecipeIngredient          RecipeIngredient[]
+}
+
+model RecipeIngredient {
+  recipeId     Int
+  recipe       Recipe     @relation(fields: [recipeId], references: [idRecipe], onDelete: NoAction, onUpdate: NoAction)
+  ingredientId Int
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [idIngredient], onDelete: NoAction, onUpdate: NoAction)
+  quantity     Int
+
+  @@id([recipeId, ingredientId])
+}
+
+model PurchaseIngredientHistory {
+  idPurchaseIngredientHistory Int        @unique(map: "idPurchaseIngredientHistory_UNIQUE") @default(autoincrement())
+  purchaseDate                DateTime?  @db.DateTime(0)
+  quantity                    Int
+  cost                        Decimal    @db.Decimal(9, 2)
+  ingredientId                Int
+  ingredient                  Ingredient @relation(fields: [ingredientId], references: [idIngredient], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([ingredientId], map: "ingredientId_idx")
+}
+
+model User {
+  idUser       Int       @unique(map: "idUser_UNIQUE") @default(autoincrement())
+  name         String    @db.VarChar(250)
+  mail         String    @db.VarChar(250)
+  password     String    @db.VarChar(250)
+  creationDate DateTime? @db.DateTime(0)
+  role         Role      @default(USER)
+  Sale         Sale[]
+  Review       Review[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
