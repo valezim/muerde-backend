@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const healthRoute = require('./route/healthRoute');
+const ingredientRoute = require('./route/IngredientRoute');
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(cookieParser());
 app.use(morgan('dev'));
 
 app.use('/health', healthRoute);
+app.use('/ingredient', ingredientRoute);
 
 const port = process.env.SERVER_PORT || 8000;
 app.listen(port, () => console.log(`Server is running on port ${port}`));
