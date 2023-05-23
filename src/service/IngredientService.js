@@ -1,29 +1,26 @@
 const IngredientRepo = require('../repository/IngredientRepo');
-const IngredientModel = require('../model/IngredientModel');
+const PurchaseIngredientHistoryRepo = require('../repository/PurchaseIngredientHistoryRepo');
 
 class IngredientService {
   async postIngredient({name, unit}) {
     try {
-      const ingredientModel = new IngredientModel({name, unit, totalQuantity: 0});
-      const createdIngredient = await IngredientRepo.save(ingredientModel);
+      const createdIngredient = await IngredientRepo.save({name, unit, totalQuantity: 0});
       return createdIngredient;
     } catch (error) {
       console.log(`Error - IngredientService :: postIngredient - ${error.stack}`);
       throw error;
     }
   }
-
   async putIngredient({idIngredient, name, unit, lastPurchaseCost, totalQuantity}) {
     try {
       const idIngredientNumber = Number(idIngredient);
-      const ingredientModel = new IngredientModel({
+      const updatedIngredient = await IngredientRepo.update({
         idIngredient: idIngredientNumber,
         name,
         unit,
         lastPurchaseCost,
         totalQuantity,
       });
-      const updatedIngredient = await IngredientRepo.update(ingredientModel);
       return updatedIngredient;
     } catch (error) {
       console.log(`Error - IngredientService :: putIngredient - ${error.stack}`);
@@ -58,6 +55,26 @@ class IngredientService {
       await IngredientRepo.delete({idIngredient: idIngredientNumber});
     } catch (error) {
       console.log(`Error - IngredientService :: deleteIngredient - ${error.stack}`);
+      throw error;
+    }
+  }
+
+  async postPurchaseIngredient({quantity, cost, ingredient_id: ingredientId}) {
+    try {
+      const createdPurchaseIngredient = await PurchaseIngredientHistoryRepo.save({quantity, cost, ingredientId});
+      return createdPurchaseIngredient;
+    } catch (error) {
+      console.log(`Error - IngredientService :: postPurchaseIngredient - ${error.stack}`);
+      throw error;
+    }
+  }
+
+  async getAllPurchasedIngredients() {
+    try {
+      const purchasedIngredients = await PurchaseIngredientHistoryRepo.getAll();
+      return purchasedIngredients;
+    } catch (error) {
+      console.log(`Error - IngredientService :: getAllPurchasedIngredients - ${error.stack}`);
       throw error;
     }
   }
