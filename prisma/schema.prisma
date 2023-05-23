@@ -110,7 +110,7 @@ model RecipeIngredient {
 
 model PurchaseIngredientHistory {
   idPurchaseIngredientHistory Int        @unique(map: "idPurchaseIngredientHistory_UNIQUE") @default(autoincrement())
-  purchaseDate                DateTime   @db.DateTime(0)
+  purchaseDate                DateTime   @default(now())
   quantity                    Int
   cost                        Decimal    @db.Decimal(9, 2)
   ingredientId                Int
