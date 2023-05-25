@@ -49,9 +49,7 @@ class IngredientController {
 
   static async deleteIngredient(req, res) {
     try {
-      const idIngredient = req.query.id ?? 0;
-
-      if (idIngredient === 0) return res.status(400).json({error: 'Ingredient id is required'});
+      const idIngredient = req.query.id;
       await IngredientService.deleteIngredient({idIngredient});
       return res.json({message: `Ingredient with id ${idIngredient} deleted successfully.`});
     } catch (error) {
