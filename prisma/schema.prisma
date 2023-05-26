@@ -32,6 +32,7 @@ model Product {
   image       String?       @db.VarChar(250)
   price       Decimal       @db.Decimal(9, 2)
   tags        String?       @db.VarChar(250)
+  status      String        @db.VarChar(250)
   recipeId    Int
   catalogId   Int?
   catalog     Catalog?      @relation(fields: [catalogId], references: [idCatalog], onDelete: NoAction, onUpdate: NoAction)
@@ -43,13 +44,18 @@ model Product {
 }
 
 model Sale {
-  idSale   Int           @id @unique(map: "idSale_UNIQUE") @default(autoincrement())
-  date     DateTime      @db.DateTime(0)
-  status   Status        @default(TODO)
-  userId   Int
-  Review   Review[]
-  user     User          @relation(fields: [userId], references: [idUser], onDelete: NoAction, onUpdate: NoAction)
-  products SaleProduct[]
+  idSale          Int           @id @unique(map: "idSale_UNIQUE") @default(autoincrement())
+  start_date      DateTime      @db.DateTime(0)
+  finish_date     DateTime      @db.DateTime(0)
+  status          Status        @default(TODO)
+  delivery_type   String        @db.VarChar(250)
+  address         String        @db.VarChar(250)
+  total_earn_cost Decimal       @db.Decimal(9, 2)
+  total_loss_cost Decimal       @db.Decimal(9, 2)
+  userId          Int
+  Review          Review[]
+  user            User          @relation(fields: [userId], references: [idUser], onDelete: NoAction, onUpdate: NoAction)
+  products        SaleProduct[]
 
   @@index([userId], map: "userId_idx")
 }
@@ -138,11 +144,11 @@ enum Role {
 enum Unit {
   G
   L
-  OZ
 }
 
 enum Status {
   TODO
   WIP
-  DONE
+  DONE_PICK_UP
+  DONE_DELIVERY
 }

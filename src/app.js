@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const healthRoute = require('./route/healthRoute');
 const ingredientRoute = require('./route/IngredientRoute');
+const recipeRoute = require('./route/RecipeRoute');
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(morgan('dev'));
 
 app.use('/health', healthRoute);
 app.use('/ingredient', ingredientRoute);
+app.use('/recipe', recipeRoute);
 
 const port = process.env.SERVER_PORT || 8000;
 app.listen(port, () => console.log(`Server is running on port ${port}`));
