@@ -1,3 +1,3 @@
 module.exports = {
-  UNIT_MEASURES: ['G', 'L', 'OZ'],
+  UNIT_MEASURES: ['G', 'L'],
 };
