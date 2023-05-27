@@ -59,7 +59,7 @@ class IngredientService {
     }
   }
 
-  async postPurchaseIngredient({quantity, cost, ingredient_id: ingredientId}) {
+  async postPurchaseIngredient({quantity, cost, ingredientId}) {
     try {
       const createdPurchaseIngredient = await PurchaseIngredientHistoryRepo.save({quantity, cost, ingredientId});
       return createdPurchaseIngredient;
