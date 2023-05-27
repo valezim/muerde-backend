@@ -1,9 +1,17 @@
 const RecipeRepo = require('../repository/RecipeRepo');
+const RecipeIngredientRepo = require('../repository/RecipeIngredientRepo');
 
 class RecipeService {
-  async postRecipe({name, instructions, preparationTimeMinutes}) {
+  async postRecipe({name, instructions, preparationTimeMinutes, ingredients = []}) {
     try {
-      const createdRecipe = await RecipeRepo.save({name, instructions, preparationTimeMinutes});
+      const createdRecipe = await RecipeRepo.save({name, instructions, preparationTimeMinutes, ingredients});
+      ingredients.forEach((ingredient) => {
+        RecipeIngredientRepo.save({
+          ingredientId: ingredient.ingredientId,
+          recipeId: createdRecipe.idRecipe,
+          quantity: ingredient.quantity,
+        });
+      });
       return createdRecipe;
     } catch (error) {
       console.log(`Error - RecipeService :: postRecipe - ${error.stack}`);

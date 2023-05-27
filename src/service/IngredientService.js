@@ -1,5 +1,6 @@
 const IngredientRepo = require('../repository/IngredientRepo');
 const PurchaseIngredientHistoryRepo = require('../repository/PurchaseIngredientHistoryRepo');
+const IngredientDTO = require('../dto/IngredientDTO');
 
 class IngredientService {
   async postIngredient({name, unit}) {
@@ -31,7 +32,8 @@ class IngredientService {
   async getAllIngredients() {
     try {
       const ingredients = await IngredientRepo.getAll();
-      return ingredients;
+      const ingredientsDTO = ingredients.map((ingredient) => new IngredientDTO(ingredient));
+      return ingredientsDTO;
     } catch (error) {
       console.log(`Error - IngredientService :: getAllIngredients - ${error.stack}`);
       throw error;
