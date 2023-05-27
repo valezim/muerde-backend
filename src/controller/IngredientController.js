@@ -1,11 +1,12 @@
+const humps = require('humps');
 const IngredientService = require('../service/IngredientService');
 
 class IngredientController {
   static async postIngredient(req, res) {
     try {
-      const newIngredient = req.body.ingredient;
+      const newIngredient = humps.camelizeKeys(req.body.ingredient);
       const createdIngredient = await IngredientService.postIngredient(newIngredient);
-      return res.json({...createdIngredient});
+      return res.json({...humps.decamelizeKeys(createdIngredient)});
     } catch (error) {
       console.log(`Error - IngredientController :: postIngredient - ${error}`);
       return res.status(error.status || 500).json({
@@ -17,10 +18,10 @@ class IngredientController {
   static async putIngredient(req, res) {
     try {
       const idIngredient = req.query.id;
-      const ingredient = req.body.ingredient;
+      const ingredient = humps.camelizeKeys(req.body.ingredient);
       const updatedIngredient = await IngredientService.putIngredient({...ingredient, idIngredient});
 
-      return res.json({...updatedIngredient});
+      return res.json({...humps.decamelizeKeys(updatedIngredient)});
     } catch (error) {
       console.log(`Error - IngredientController :: putIngredient - ${error}`);
       return res.status(error.status || 500).json({
@@ -35,10 +36,10 @@ class IngredientController {
 
       if (idIngredient) {
         const ingredient = await IngredientService.getIngredientById({idIngredient});
-        return res.json({...ingredient});
+        return res.json({...humps.decamelizeKeys(ingredient)});
       }
       const ingredients = await IngredientService.getAllIngredients();
-      return res.json({ingredients});
+      return res.json({ingredients: humps.decamelizeKeys(ingredients)});
     } catch (error) {
       console.log(`Error - IngredientController :: getIngredients - ${error}`);
       return res.status(error.status || 500).json({
@@ -62,11 +63,11 @@ class IngredientController {
 
   static async postPurchaseIngredient(req, res) {
     try {
-      const newPurchaseIngredient = req.body.purchase_ingredient;
+      const newPurchaseIngredient = humps.camelizeKeys(req.body.purchase_ingredient);
 
       const createdPurchaseIngredient = await IngredientService.postPurchaseIngredient(newPurchaseIngredient);
 
-      return res.json({...createdPurchaseIngredient});
+      return res.json({...humps.decamelizeKeys(createdPurchaseIngredient)});
     } catch (error) {
       console.log(`Error - IngredientController :: postPurchaseIngredient - ${error}`);
       return res.status(error.status || 500).json({
@@ -78,7 +79,7 @@ class IngredientController {
   static async getAllPurchasedIngredients(req, res) {
     try {
       const purchasedIngredients = await IngredientService.getAllPurchasedIngredients();
-      return res.json({purchased_ingredients: purchasedIngredients});
+      return res.json({purchased_ingredients: humps.decamelizeKeys(purchasedIngredients)});
     } catch (error) {
       console.log(`Error - IngredientController :: getAllPurchasedIngredients - ${error}`);
       return res.status(error.status || 500).json({
