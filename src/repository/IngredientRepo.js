@@ -44,7 +44,28 @@ class IngredientRepo {
 
   async getAll() {
     try {
-      const ingredients = await this.db.Ingredient.findMany();
+      const ingredients = await this.db.Ingredient.findMany({
+        include: {
+          PurchaseIngredientHistory: {
+            select: {
+              purchaseDate: true,
+            },
+            orderBy: {
+              purchaseDate: 'desc',
+            },
+            take: 1,
+          },
+          RecipeIngredient: {
+            select: {
+              recipe: {
+                select: {
+                  idRecipe: true,
+                },
+              },
+            },
+          },
+        },
+      });
       return ingredients;
     } catch (error) {
       console.log(`Error - IngredientRepo :: getAll - ${error.stack}`);
