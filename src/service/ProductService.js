@@ -1,10 +1,9 @@
 const ProductRepo = require('../repository/ProductRepo');
-const ProductDTO = require('../dto/ProductDTO');
 
 class ProductService {
-  async postProduct({title, price, image, description, tags, catalog_id, recipe_id}) {
+  async postProduct({title, description, image, price, tags, status, recipe_id, catalog_id}) {
     try {
-      const createdProduct = await ProductRepo.save({title, price, image, description, tags, catalog_id, recipe_id});
+      const createdProduct = await ProductRepo.save({title, description, image, price, tags, status, recipe_id, catalog_id});
       return createdProduct;
     } catch (error) {
       console.log(`Error - ProductService :: postProduct - ${error.stack}`);
@@ -25,9 +24,8 @@ class ProductService {
 
   async getAllProducts() {
     try {
-      const Products = await ProductRepo.getAll();
-      const ProductsDTO = Products.map((Product) => new ProductDTO(Product));
-      return ProductsDTO;
+      const products = await ProductRepo.getAll();
+      return products;
     } catch (error) {
       console.log(`Error - ProductService :: getAllProducts - ${error.stack}`);
       throw error;

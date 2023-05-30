@@ -10,11 +10,16 @@ class ProductRepo {
       const newProduct = await this.db.Product.create({
         data: {
             title: Product.title,
-            price: Product.price,
-            image: Product.image,
             description: Product.description,
+            image: Product.image,
+            price: Product.price,
             tags: Product.tags,
-            catalog_id: Product.catalog_id
+            status: Product.status,
+            recipe_id: Product.recipe_id,
+            catalog_id: Product.catalog_id,
+            recipe: {
+              recipe_id: Product.recipe_id
+            }
         },
       });
       return newProduct;
