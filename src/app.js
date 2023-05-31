@@ -23,5 +23,5 @@ app.use('/ingredient', ingredientRoute);
 app.use('/recipe', recipeRoute);
 app.use('/product', productRoute);
 
-const port = process.env.SERVER_PORT || 8000;
+const port = 8000;
 app.listen(port, () => console.log(`Server is running on port ${port}`));

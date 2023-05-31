@@ -35,10 +35,10 @@ class ProductController {
             const idProduct = req.query.id;
 
             if (idProduct) {
-                const Product = await ProductService.getProductById({ idProduct });
+                const product = await ProductService.getProductById({ idProduct });
                 return res.json({ ...humps.decamelizeKeys(product) });
             }
-            const Products = await ProductService.getAllProducts();
+            const products = await ProductService.getAllProducts();
             return res.json({ Products: humps.decamelizeKeys(products) });
         } catch (error) {
             console.log(`Error - ProductController :: getProducts - ${error}`);
