@@ -15,11 +15,8 @@ class ProductRepo {
             price: Product.price,
             tags: Product.tags,
             status: Product.status,
-            recipe_id: Product.recipe_id,
-            catalog_id: Product.catalog_id,
-            recipe: {
-              recipe_id: Product.recipe_id
-            }
+            recipeId: Product.recipeId,
+            catalogId: Product.catalogId,
         },
       });
       return newProduct;

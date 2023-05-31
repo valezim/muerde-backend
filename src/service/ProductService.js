@@ -1,9 +1,9 @@
 const ProductRepo = require('../repository/ProductRepo');
 
 class ProductService {
-  async postProduct({title, description, image, price, tags, status, recipe_id, catalog_id}) {
+  async postProduct({title, description, image, price, tags, status, recipeId, catalogId}) {
     try {
-      const createdProduct = await ProductRepo.save({title, description, image, price, tags, status, recipe_id, catalog_id});
+      const createdProduct = await ProductRepo.save({title, description, image, price, tags, status, recipeId, catalogId});
       return createdProduct;
     } catch (error) {
       console.log(`Error - ProductService :: postProduct - ${error.stack}`);
