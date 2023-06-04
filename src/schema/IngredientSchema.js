@@ -10,7 +10,7 @@ const putIngredientSchema = Joi.object({
   name: Joi.string(),
   unit: Joi.string().valid(...UNIT_MEASURES),
   last_purchase_cost: Joi.number().positive(),
-  total_quantity: Joi.number().integer().positive(),
+  total_quantity: Joi.number().positive(),
 });
 
 module.exports = {postIngredientSchema, putIngredientSchema};

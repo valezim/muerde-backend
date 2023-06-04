@@ -64,6 +64,13 @@ class IngredientService {
   async postPurchaseIngredient({quantity, cost, ingredientId}) {
     try {
       const createdPurchaseIngredient = await PurchaseIngredientHistoryRepo.save({quantity, cost, ingredientId});
+      const ingredient = await IngredientRepo.getById({idIngredient: ingredientId});
+      await IngredientRepo.update({
+        totalQuantity: ingredient.totalQuantity + createdPurchaseIngredient.quantity,
+        lastPurchaseCost: createdPurchaseIngredient.cost,
+        lastPurchaseDate: createdPurchaseIngredient.purchaseDate,
+        idIngredient: ingredientId,
+      });
       return createdPurchaseIngredient;
     } catch (error) {
       console.log(`Error - IngredientService :: postPurchaseIngredient - ${error.stack}`);

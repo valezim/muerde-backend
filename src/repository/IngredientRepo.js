@@ -13,6 +13,7 @@ class IngredientRepo {
           unit: ingredient.unit,
           lastPurchaseCost: ingredient.lastPurchaseCost,
           totalQuantity: ingredient.totalQuantity,
+          lastPurchaseDate: ingredient.lastPurchaseDate,
         },
       });
       return newIngredient;
@@ -33,6 +34,7 @@ class IngredientRepo {
           unit: ingredient.unit || undefined,
           lastPurchaseCost: ingredient.lastPurchaseCost || undefined,
           totalQuantity: ingredient.totalQuantity || undefined,
+          lastPurchaseDate: ingredient.lastPurchaseDate || undefined,
         },
       });
       return updatedIngredient;
@@ -46,15 +48,6 @@ class IngredientRepo {
     try {
       const ingredients = await this.db.Ingredient.findMany({
         include: {
-          PurchaseIngredientHistory: {
-            select: {
-              purchaseDate: true,
-            },
-            orderBy: {
-              purchaseDate: 'desc',
-            },
-            take: 1,
-          },
           RecipeIngredient: {
             select: {
               recipe: {

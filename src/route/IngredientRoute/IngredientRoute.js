@@ -27,4 +27,6 @@ router.route('/purchase').post(validatePostPurchaseIngredient, IngredientControl
 
 router.route('/purchase').get(generalQueryValidator, IngredientController.getAllPurchasedIngredients);
 
+router.route('/unit').get(IngredientController.getAvailableUnitMeasures);
+
 module.exports = router;
