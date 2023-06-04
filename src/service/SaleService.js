@@ -1,6 +1,7 @@
 const SaleRepo = require('../repository/SaleRepo');
 
 const SaleDTO = require('../dto/SaleDTO');
+const SaleProductRepo = require('../repository/SaleProductRepo');
 
 class SaleService {
   async getAllSales() {
@@ -14,14 +15,49 @@ class SaleService {
     }
   }
 
-  async getSalesById({idSale}) {
+  async getSalesById({ idSale }) {
     try {
       const idSaleNumber = Number(idSale);
-      const sale = await SaleRepo.getById({idSale: idSaleNumber});
+      const sale = await SaleRepo.getById({ idSale: idSaleNumber });
       return sale;
     } catch (error) {
       console.log(`Error - SaleService :: getSalesById - ${error.stack}`);
       throw error;
+    }
+  }
+
+
+  async putSale({ idSale, state }) {
+    try {
+      const idSaleNumber = Number(idSale);
+
+      const updatedSale = await SaleRepo.update({
+        idSale: idSaleNumber,
+        state
+      });
+
+      return updatedSale;
+    } catch (error) {
+      console.log(`Error - SaleService :: putSale - ${error.stack}`);
+      throw error;
+    }
+  }
+
+
+  async postSale({ deliveryType, userId, products = [] }) {
+    try {
+      const createdSale = await SaleRepo.save({deliveryType, userId, products});
+      products.forEach((product) => {
+        SaleProductRepo.save({
+          saleId: createdSale.idSale,
+          productId: product.productId,
+          quantity: product.quantity
+        })
+      })
+      return createdSale;
+    } catch (error) {
+      console.log(`Error - SaleService :: postSale - ${error.stack}`);
+    throw error;
     }
   }
 }

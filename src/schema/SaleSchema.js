@@ -1,22 +1,20 @@
 const Joi = require('joi');
 
-const ingredientSchema = Joi.object({
-  ingredient_id: Joi.number().required(),
-  quantity: Joi.number().required(),
+const {SALE_STATES, DELIVERY_TYPE} = require('../config/default');
+
+const productSchema = Joi.object({
+  product_id:  Joi.number().required(),
+  quantity: Joi.number().required()
 });
 
 const postSaleSchema = Joi.object({
-  name: Joi.string().required(),
-  instructions: Joi.string().required(),
-  preparation_time_minutes: Joi.number().integer().positive().required(),
-  ingredients: Joi.array().items(ingredientSchema).required(),
+  delivery_type: Joi.string().valid(...DELIVERY_TYPE),
+  user_id: Joi.number().integer(),
+  products: Joi.array().items(productSchema).required()
 });
 
 const putSaleSchema = Joi.object({
-  name: Joi.string(),
-  instructions: Joi.string(),
-  preparation_time_minutes: Joi.number().integer().positive(),
-  ingredients: Joi.array().items(ingredientSchema),
+  state: Joi.string().valid(...SALE_STATES)
 });
 
 module.exports = {postSaleSchema, putSaleSchema};

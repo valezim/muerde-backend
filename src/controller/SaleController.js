@@ -19,6 +19,38 @@ class SaleController {
             });
         }
     }
+
+    static async putSale(req, res) {
+        try {
+            
+            const idSale = req.query.id;
+            const {state} = req.body.sale
+
+            const updatedSale = await SaleService.putSale({idSale, state})
+            return res.json({ ...humps.decamelizeKeys(updatedSale) });
+
+        } catch (error) {
+            console.log(`Error - SaleController :: putSale - ${error}`);
+            return res.status(error.status || 500).json({
+                error: 'Unexpected error while trying to update Sale',
+            });
+        }
+    }
+
+    static async postSale(req, res) {
+        try {
+          const newSale = humps.camelizeKeys(req.body.sale);
+          const createdSale = await SaleService.postSale(newSale);
+          return res.json({...humps.decamelizeKeys(createdSale)});
+        } catch (error) {
+          console.log(`Error - SaleController :: postSale - ${error}`);
+          return res.status(error.status || 500).json({
+            error: 'Unexpected error while trying to create Sale',
+          });
+        }
+      }
+
+    
 }
 
 

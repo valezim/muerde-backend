@@ -1,3 +1,5 @@
 module.exports = {
   UNIT_MEASURES: ['G'],
+  SALE_STATES: ['TODO', 'WIP', 'DONE_PICK_UP', 'DONE_DELIVERY'],
+  DELIVERY_TYPE: ['PICK_UP', 'DELIVERY']
 };
