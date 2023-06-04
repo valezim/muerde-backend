@@ -6,7 +6,7 @@ class IngredientDTO {
     this.unit = ingredientData.unit;
     this.lastPurchaseCost = ingredientData.lastPurchaseCost;
     this.totalQuantity = ingredientData.totalQuantity;
-    this.lastPurchaseDate = ingredientData.PurchaseIngredientHistory[0]?.purchaseDate;
+    this.lastPurchaseDate = ingredientData.lastPurchaseDate;
     this.recipie_using_count = ingredientData.RecipeIngredient?.length;
   }
 }

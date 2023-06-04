@@ -1,5 +1,6 @@
 const humps = require('humps');
 const IngredientService = require('../service/IngredientService');
+const {UNIT_MEASURES} = require('../config/default');
 
 class IngredientController {
   static async postIngredient(req, res) {
@@ -84,6 +85,17 @@ class IngredientController {
       console.log(`Error - IngredientController :: getAllPurchasedIngredients - ${error}`);
       return res.status(error.status || 500).json({
         error: 'Unexpected error while trying to get all purchased ingredients',
+      });
+    }
+  }
+
+  static async getAvailableUnitMeasures(req, res) {
+    try {
+      return res.json({available_unit_measures: UNIT_MEASURES});
+    } catch (error) {
+      console.log(`Error - IngredientController :: getAvailableUnitMeasures - ${error}`);
+      return res.status(error.status || 500).json({
+        error: 'Unexpected error while trying to get all available unit measures',
       });
     }
   }

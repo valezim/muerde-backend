@@ -30,7 +30,7 @@ model Product {
   title       String        @db.VarChar(250)
   description String?       @db.VarChar(250)
   image       String?       @db.VarChar(250)
-  price       Decimal       @db.Decimal(9, 2)
+  price       Float
   tags        String?       @db.VarChar(250)
   status      String        @db.VarChar(250)
   recipeId    Int
@@ -49,8 +49,8 @@ model Sale {
   finish_date     DateTime?      @db.DateTime(0)
   status          Status        @default(TODO)
   delivery_type   String        @db.VarChar(250)
-  total_earn_cost Decimal       @db.Decimal(9, 2)
-  total_loss_cost Decimal       @db.Decimal(9, 2)
+  total_earn_cost Float
+  total_loss_cost Float
   userId          Int
   Review          Review[]
   user            User          @relation(fields: [userId], references: [idUser], onDelete: NoAction, onUpdate: NoAction)
@@ -96,8 +96,9 @@ model Ingredient {
   idIngredient              Int                         @unique(map: "idIngredient_UNIQUE") @default(autoincrement())
   name                      String                      @db.VarChar(250)
   unit                      Unit
-  lastPurchaseCost          Decimal?                    @db.Decimal(9, 2)
-  totalQuantity             Int
+  lastPurchaseCost          Float?
+  lastPurchaseDate          DateTime?
+  totalQuantity             Float?
   PurchaseIngredientHistory PurchaseIngredientHistory[]
   RecipeIngredient          RecipeIngredient[]
 }
@@ -105,7 +106,7 @@ model Ingredient {
 model RecipeIngredient {
   recipeId     Int
   ingredientId Int
-  quantity     Int
+  quantity     Float
   ingredient   Ingredient @relation(fields: [ingredientId], references: [idIngredient], onDelete: NoAction, onUpdate: NoAction)
   recipe       Recipe     @relation(fields: [recipeId], references: [idRecipe], onDelete: NoAction, onUpdate: NoAction)
 
@@ -116,8 +117,8 @@ model RecipeIngredient {
 model PurchaseIngredientHistory {
   idPurchaseIngredientHistory Int        @unique(map: "idPurchaseIngredientHistory_UNIQUE") @default(autoincrement())
   purchaseDate                DateTime   @default(now())
-  quantity                    Int
-  cost                        Decimal    @db.Decimal(9, 2)
+  quantity                    Float
+  cost                        Float
   ingredientId                Int
   ingredient                  Ingredient @relation(fields: [ingredientId], references: [idIngredient], onDelete: NoAction, onUpdate: NoAction)
 
