@@ -1,4 +1,5 @@
-const {PrismaClient} = require('@prisma/client');
+const { PrismaClient } = require('@prisma/client');
+const IngredientRepo = require('./IngredientRepo');
 
 class ProductRepo {
   constructor() {
@@ -73,18 +74,60 @@ class ProductRepo {
     }
   }
 
-  async delete({idProduct}) {
+  async getByIdWithIngredientsId({ idProduct }) {
     try {
-      await this.db.Product.delete({
+      const product = await this.db.Product.findUnique({
         where: {
           idProduct: idProduct,
         },
+        select: {
+          recipe: {
+            select: {
+              RecipeIngredient:{
+
+              }
+            }
+          }
+        }
+
       });
-    } catch (error) {
-      console.log(`Error - ProductRepo :: delete - ${error.stack}`);
-      throw error;
-    }
+    return product;
+  } catch(error) {
+    console.log(`Error - ProductRepo :: getById - ${error.stack}`);
+    throw error;
   }
+}
+  async delete ({ idProduct }) {
+  try {
+    await this.db.Product.delete({
+      where: {
+        idProduct: idProduct,
+      },
+    });
+  } catch (error) {
+    console.log(`Error - ProductRepo :: delete - ${error.stack}`);
+    throw error;
+  }
+}
+
+  async updateIngredientStock({ product, quantity }) {
+  try {
+    const fullProduct = await this.getByIdWithIngredientsId({ idProduct: product })
+    console.log('............................', fullProduct);
+    let quantityToSubstract = 0;
+
+    for (let i = 0; i < fullProduct.recipe.RecipeIngredient.length; i++) {
+      console.log('FULLPRODUCTTTTTTTTTTTTTT', fullProduct.recipe.RecipeIngredient[i])
+      quantityToSubstract = fullProduct.recipe.RecipeIngredient[i].quantity * quantity;
+      await IngredientRepo.updateStock({ idIngredient: fullProduct.recipe.RecipeIngredient[i].ingredientId, quantity: quantityToSubstract });
+
+    }
+
+  } catch (error) {
+    console.log(`Error - ProductRepo :: updateIngredientStock - ${error.stack}`);
+    throw error;
+  }
+}
 }
 
 module.exports = new ProductRepo();

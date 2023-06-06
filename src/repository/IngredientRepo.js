@@ -92,6 +92,31 @@ class IngredientRepo {
       throw error;
     }
   }
+
+
+  async updateStock({idIngredient, quantity}) {
+    try {
+      const ingredient = await this.db.Ingredient.findUnique({
+        where: {
+          idIngredient: idIngredient,
+        },
+      });
+      const newQuantity = ingredient.totalQuantity - quantity;
+      if(newQuantity < 0) throw new Error('No hay suficiente stock');
+      const updatedIngredient = await this.db.Ingredient.update({
+        where: {
+          idIngredient: idIngredient,
+        },
+        data: {
+          totalQuantity: newQuantity,
+        },
+      });
+      return updatedIngredient;
+    } catch (error) {
+      console.log(`Error - IngredientRepo :: updateStock - ${error.stack}`);
+      throw error;
+    }
+  }
 }
 
 module.exports = new IngredientRepo();

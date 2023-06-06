@@ -148,7 +148,7 @@ class SaleRepo {
 
       }
       const data = {
-        price: product.price.d[0],
+        price: product.price,
         cost: cost
       }
       return data;
@@ -175,6 +175,7 @@ class SaleRepo {
         const data = await this.getPriceAndCost(sale.products[i].productId)
         price += data.price;
         cost += data.cost;
+        await ProductRepo.updateIngredientStock({product: sale.products[i].productId, quantity: sale.products[i].quantity});
       }
       const newSale = await this.db.Sale.create({
         data: {
