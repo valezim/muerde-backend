@@ -144,7 +144,7 @@ enum Role {
 
 enum Unit {
   G
-  L
+  UN
 }
 
 enum Status {
