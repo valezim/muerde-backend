@@ -12,7 +12,7 @@ class PurchaseIngredientHistoryRepo {
           ingredientId: purchaseIngredient.ingredientId,
           purchaseDate: purchaseIngredient.purchaseDate,
           quantity: purchaseIngredient.quantity,
-          cost: new Prisma.Decimal(purchaseIngredient.cost),
+          cost: purchaseIngredient.cost,
         },
       });
       return newPurchaseIngredient;
