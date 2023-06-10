@@ -32,7 +32,7 @@ class ProductService {
     }
   }
 
-  async getProductById({idProduct}) { // Para el detalle del producto?
+  async getProductById({idProduct}) {
     try {
       const idProductNumber = Number(idProduct);
       const Product = await ProductRepo.getById({idProduct: idProductNumber});
