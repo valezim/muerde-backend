@@ -6,18 +6,18 @@ class ProductRepo {
     this.db = new PrismaClient();
   }
 
-  async save(Product) {
+  async save(product) {
     try {
-      const newProduct = await this.db.Product.create({
+      const newProduct = await this.db.product.create({
         data: {
-            title: Product.title,
-            description: Product.description,
-            image: Product.image,
-            price: Product.price,
-            tags: Product.tags,
-            status: Product.status,
-            recipeId: Product.recipeId,
-            catalogId: Product.catalogId,
+            title: product.title,
+            description: product.description,
+            image: product.image,
+            price: product.price,
+            tags: product.tags,
+            status: product.status,
+            recipeId: product.recipeId,
+            catalogId: product.catalogId,
         },
       });
       return newProduct;
@@ -27,20 +27,20 @@ class ProductRepo {
     }
   }
 
-  async update(Product) {
+  async update(product) {
     try {
-      const updatedProduct =await this.db.Product.update({
+      const updatedProduct =await this.db.product.update({
         where: {
-          idProduct: Product.idProduct,
+          idProduct: product.idProduct,
         },
         data: {
-            title: Product.title || undefined,
-            price: Product.price || undefined,
-            image: Product.image || undefined,
-            description: Product.description || undefined,
-            tags: Product.tags || undefined,
-            catalog_id: Product.catalog_id || undefined,
-            status: Product.status || undefined
+            title: product.title || undefined,
+            price: product.price || undefined,
+            image: product.image || undefined,
+            description: product.description || undefined,
+            tags: product.tags || undefined,
+            catalog_id: product.catalog_id || undefined,
+            status: product.status || undefined
         },
       });
       return updatedProduct;

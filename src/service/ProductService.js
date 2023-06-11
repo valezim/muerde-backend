@@ -14,7 +14,9 @@ class ProductService {
   async putProduct({idProduct, title, price, image, description, tags, catalog_id, status}) {
     try {
       const idProductNumber = Number(idProduct);
-      const updatedProduct = await ProductRepo.update({idProduct: idProductNumber, title, price, image, description, tags, catalog_id, status});
+      const priceNumber = Number(price);
+      const catalogIdNumber = Number(catalog_id);
+      const updatedProduct = await ProductRepo.update({idProduct: idProductNumber, title, priceNumber, image, description, tags, catalogIdNumber, status});
       return updatedProduct;
     } catch (error) {
       console.log(`Error - ProductService :: putProduct - ${error.stack}`);
