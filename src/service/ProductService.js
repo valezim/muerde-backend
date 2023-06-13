@@ -61,10 +61,10 @@ class ProductService {
     }
   }
 
-  async getProductsByRecipeId({recipeId}) {
+  async getProductsByRecipeId(recipeId) {
+    console.log("el id que llega al servicio ", recipeId);
     try {
-      const recipeIdNumber = Number(recipeId);
-      const products = await ProductRepo.getProductsByRecipeId({recipeId: recipeIdNumber});
+      const products = await ProductRepo.getProductsByRecipeId(recipeId);
       return products;
     } catch (error) {
       console.log(`Error - ProductService :: getProductsByRecipeId - ${error.stack}`);

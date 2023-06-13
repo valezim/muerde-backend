@@ -64,9 +64,10 @@ class ProductController {
     }
 
     static async getProductsByRecipeId(req, res) {
+        console.log("el id que llega al contoller ", req.query);
         try {
-            const recipeId = req.query.recipeId;
-            const products = await ProductService.getProductsByRecipeId({ recipeId });
+            const recipeId = req.query.id;
+            const products = await ProductService.getProductsByRecipeId(recipeId);
             return res.json({ Products: humps.decamelizeKeys(products) });
         } catch (error) {
             console.log(`Error - ProductController :: getProductsByRecipeId - ${error}`);

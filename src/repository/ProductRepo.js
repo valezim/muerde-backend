@@ -133,11 +133,16 @@ class ProductRepo {
   }
 }
 
-async getProductsByRecipeId({ recipeId }) {
+async getProductsByRecipeId(recipeId) {
+  console.log("el id que llega al repo ", recipeId);
   try {
+    const recipeIdNumber = Number(recipeId);
     const products = await this.db.Product.findMany({
       where: {
-        recipeId: recipeId,
+        recipeId: recipeIdNumber,
+      },
+      include: {
+        catalog: true,
       },
     });
     return products;
