@@ -3,7 +3,11 @@ const ProductRepo = require('../repository/ProductRepo');
 class ProductService {
   async postProduct({title, description, image, price, tags, status, recipeId, catalogId}) {
     try {
-      const createdProduct = await ProductRepo.save({title, description, image, price, tags, status, recipeId, catalogId});
+      const priceNumber = Number(price);
+      const recipeIdNumber = Number(recipeId);
+      const catalogIdNumber = Number(catalogId);
+      const createdProduct = await ProductRepo.save({title, description, image, priceNumber, tags, status, recipeIdNumber, catalogIdNumber});
+      console.log("post product servicio: ", createdProduct);
       return createdProduct;
     } catch (error) {
       console.log(`Error - ProductService :: postProduct - ${error.stack}`);
@@ -17,6 +21,8 @@ class ProductService {
       const priceNumber = Number(price);
       const catalogIdNumber = Number(catalog_id);
       const updatedProduct = await ProductRepo.update({idProduct: idProductNumber, title, priceNumber, image, description, tags, catalogIdNumber, status});
+      console.log("put product servicio: ", updatedProduct);
+
       return updatedProduct;
     } catch (error) {
       console.log(`Error - ProductService :: putProduct - ${error.stack}`);
@@ -51,6 +57,17 @@ class ProductService {
       await ProductRepo.delete({idProduct: idProductNumber});
     } catch (error) {
       console.log(`Error - ProductService :: deleteProduct - ${error.stack}`);
+      throw error;
+    }
+  }
+
+  async getProductsByRecipeId(recipeId) {
+    console.log("el id que llega al servicio ", recipeId);
+    try {
+      const products = await ProductRepo.getProductsByRecipeId(recipeId);
+      return products;
+    } catch (error) {
+      console.log(`Error - ProductService :: getProductsByRecipeId - ${error.stack}`);
       throw error;
     }
   }
