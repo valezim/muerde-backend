@@ -3,6 +3,7 @@ const ProductService = require('../service/ProductService');
 
 class ProductController {
     static async postProduct(req, res) {
+        console.log("post product controller: ", req.body.product);
         try {
             const newProduct = humps.camelizeKeys(req.body.product);
             const createdProduct = await ProductService.postProduct(newProduct);
@@ -16,6 +17,7 @@ class ProductController {
     }
 
     static async putProduct(req, res) {
+        console.log("put en el controller: ", req.body.product);
         try {
             const idProduct = req.query.id;
             const Product = humps.camelizeKeys(req.body.product);
@@ -57,6 +59,20 @@ class ProductController {
             console.log(`Error - ProductController :: deleteProduct - ${error}`);
             return res.status(error.status || 500).json({
                 error: 'Unexpected error while trying to delete product',
+            });
+        }
+    }
+
+    static async getProductsByRecipeId(req, res) {
+        console.log("el id que llega al contoller ", req.query);
+        try {
+            const recipeId = req.query.id;
+            const products = await ProductService.getProductsByRecipeId(recipeId);
+            return res.json({ Products: humps.decamelizeKeys(products) });
+        } catch (error) {
+            console.log(`Error - ProductController :: getProductsByRecipeId - ${error}`);
+            return res.status(error.status || 500).json({
+                error: 'Unexpected error while trying to get products by recipe id',
             });
         }
     }

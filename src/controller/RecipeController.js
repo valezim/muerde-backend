@@ -60,6 +60,20 @@ class RecipeController {
       });
     }
   }
+
+  static async getRecipeIngredients(req, res) {
+    console.log("id de la receta: ", req.query.id);
+    try{
+      const idRecipe = req.query.id;
+      const recipeIngredients = await RecipeService.getRecipeIngredients(idRecipe);
+      return res.json({recipeIngredients: humps.decamelizeKeys(recipeIngredients)});
+    } catch (error) {
+      console.log(`Error - RecipeController :: getRecipeIngredients - ${error}`);
+      return res.status(error.status || 500).json({
+        error: 'Unexpected error while trying to get recipe ingredients',
+      });
+    }
+  }
 }
 
 module.exports = RecipeController;

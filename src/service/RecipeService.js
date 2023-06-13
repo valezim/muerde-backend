@@ -64,6 +64,17 @@ class RecipeService {
       throw error;
     }
   }
+
+  async getRecipeIngredients(idRecipe) {
+    console.log("llega id al servicio ", idRecipe);
+    try {
+      const recipeIngredients = await RecipeIngredientRepo.getByRecipeId(idRecipe);
+      return recipeIngredients;
+    } catch (error) {
+      console.log(`Error - RecipeService :: getRecipeIngredients - ${error.stack}`);
+      throw error;
+    }
+  }
 }
 
 module.exports = new RecipeService();
