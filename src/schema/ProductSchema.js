@@ -5,6 +5,7 @@ const postProductSchema = Joi.object({
   price: Joi.number().required(),
   description: Joi.string().required(),
   tags: Joi.string().required(),
+  status: Joi.string().required(),
   image: Joi.string().required(),
   catalog_id: Joi.number().required(),
   recipe_id: Joi.number().required(),

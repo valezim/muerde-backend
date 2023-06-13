@@ -7,17 +7,18 @@ class ProductRepo {
   }
 
   async save(product) {
+    console.log("producto a guardar en el repo: ", product);
     try {
       const newProduct = await this.db.product.create({
         data: {
             title: product.title,
             description: product.description,
             image: product.image,
-            price: product.price,
+            price: product.priceNumber,
             tags: product.tags,
             status: product.status,
-            recipeId: product.recipeId,
-            catalogId: product.catalogId,
+            recipeId: product.recipeIdNumber,
+            catalogId: product.catalogIdNumber,
         },
       });
       return newProduct;
@@ -43,6 +44,9 @@ class ProductRepo {
             status: product.status || undefined
         },
       });
+
+      console.log("updated product repo: ", updatedProduct);
+
       return updatedProduct;
     } catch (error) {
       console.log(`Error - ProductRepo :: update - ${error.stack}`);
@@ -125,6 +129,20 @@ class ProductRepo {
 
   } catch (error) {
     console.log(`Error - ProductRepo :: updateIngredientStock - ${error.stack}`);
+    throw error;
+  }
+}
+
+async getProductsByRecipeId({ recipeId }) {
+  try {
+    const products = await this.db.Product.findMany({
+      where: {
+        recipeId: recipeId,
+      },
+    });
+    return products;
+  } catch (error) {
+    console.log(`Error - ProductRepo :: getProductsByRecipeId - ${error.stack}`);
     throw error;
   }
 }

@@ -20,4 +20,6 @@ router.route('/').get(generalQueryValidator, RecipeController.getRecipes);
 
 router.route('/').delete(generalQueryValidatorIdRequired, RecipeController.deleteRecipe);
 
+router.route('/ingredients').get(generalQueryValidator, RecipeController.getRecipeIngredients);
+
 module.exports = router;
