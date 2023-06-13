@@ -224,8 +224,8 @@ class SaleRepo {
       let price = 0;
       for (let i = 0; i < sale.products.length; i++) {
         const data = await this.getPriceAndCost(sale.products[i].productId)
-        price += data.price;
-        cost += data.cost;
+        price += data.price * sale.products[i].quantity;
+        cost += data.cost * sale.products[i].quantity;
         await ProductRepo.updateIngredientStock({product: sale.products[i].productId, quantity: sale.products[i].quantity});
       }
       const newSale = await this.db.Sale.create({
