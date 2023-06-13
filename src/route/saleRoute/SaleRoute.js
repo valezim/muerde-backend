@@ -13,11 +13,17 @@ const { validatePutSale, validatePostSale } = require('./middlewares/saleValidat
 //GET ALL SALES and SALES BY ID
 router.route('/').get(generalQueryValidator, SaleController.getSales);
 
+//GET SALES BY USER ID
+router.route('/user').get(generalQueryValidator, SaleController.getSalesByUserId);
+
 //PUT SALES
 router.route('/').put(generalQueryValidatorIdRequired, validatePutSale, SaleController.putSale);
 
 //POST - NEW SALE
 router.route('/').post(validatePostSale, SaleController.postSale);
+
+//GET AVAILABLE ORDER STATES
+router.route('/states').get(SaleController.getAvailableOrderStates);
 
 
 module.exports = router;

@@ -43,8 +43,10 @@ class SaleRepo {
               address: true
             }
           }
-
-        }
+        },
+          orderBy: {
+            start_date: 'desc',
+          }
 
       });
       return sales;
@@ -102,6 +104,55 @@ class SaleRepo {
       throw error;
     }
   }
+
+  async getSaleByUserId({ idUser }) {
+    try {
+      const sale = await this.db.Sale.findMany({
+        where: {
+          userId: idUser,
+        },
+        select: {
+          idSale: true,
+          start_date: true,
+          finish_date: true,
+          status: true,
+          delivery_type: true,
+          status: true,
+          total_earn_cost: true,
+          total_loss_cost: true,
+          products: {
+            select: {
+              product: {
+                select: {
+                  idProduct: true,
+                  title: true,
+                  description: true,
+                  image: true,
+                  price: true,
+                  tags: true,
+                  catalog: true
+                }
+              },
+              quantity: true
+            }
+          },
+          user: {
+            select: {
+              idUser: true,
+              name: true,
+              mail: true,
+              address: true
+            }
+          }
+        }
+      });
+      return sale;
+    } catch (error) {
+      console.log(`Error - SaleRepo :: getSaleByUserId - ${error.stack}`);
+      throw error;
+    }
+  }
+
 
   async update({ idSale, state }) {
     try {

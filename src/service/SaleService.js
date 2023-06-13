@@ -26,6 +26,17 @@ class SaleService {
     }
   }
 
+  async getSalesByUserId({ idUser }) {
+    try {
+      const idUserNumber = Number(idUser);
+      const sale = await SaleRepo.getSaleByUserId({ idUser: idUserNumber });
+      return sale[0];
+    } catch (error) {
+      console.log(`Error - SaleService :: getSalesByUserId - ${error.stack}`);
+      throw error;
+    }
+  }
+
 
   async putSale({ idSale, state }) {
     try {
