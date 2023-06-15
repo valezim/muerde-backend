@@ -33,7 +33,7 @@ model Product {
   price       Float
   tags        String?       @db.VarChar(250)
   status      String        @db.VarChar(250)
-  recipeId    Int
+  recipeId    Int           @unique
   catalogId   Int?
   catalog     Catalog?      @relation(fields: [catalogId], references: [idCatalog], onDelete: NoAction, onUpdate: NoAction)
   recipe      Recipe        @relation(fields: [recipeId], references: [idRecipe], onDelete: NoAction, onUpdate: NoAction)
