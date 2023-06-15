@@ -74,6 +74,18 @@ class RecipeController {
       });
     }
   }
+
+  static async getRecipesWithoutProducts(req, res) {
+    try {
+      const recipes = await RecipeService.getRecipesWithoutProducts();
+      return res.json({recipes: humps.decamelizeKeys(recipes)});
+    } catch (error) {
+      console.log(`Error - RecipeController :: getRecipesWithoutProducts - ${error}`);
+      return res.status(error.status || 500).json({
+        error: 'Unexpected error while trying to get recipes without products',
+      });
+    }
+  }
 }
 
 module.exports = RecipeController;
