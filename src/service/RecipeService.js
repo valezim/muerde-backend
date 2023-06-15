@@ -75,6 +75,16 @@ class RecipeService {
       throw error;
     }
   }
+
+  async getRecipesWithoutProducts() { 
+    try {
+      const recipesWithoutProducts = await RecipeRepo.getRecipesWithoutProducts();
+      return recipesWithoutProducts;
+    } catch (error) {
+      console.log(`Error - RecipeService :: getRecipesWithoutProducts - ${error.stack}`);
+      throw error;
+    }
+  }
 }
 
 module.exports = new RecipeService();

@@ -76,6 +76,21 @@ class RecipeRepo {
       throw error;
     }
   }
+
+   async getRecipesWithoutProducts() {
+    try {
+      const recipes = await this.db.Recipe.findMany({
+        include: {
+          Product: true,
+        },
+      });
+      return recipes;
+    } catch (error) {
+      console.log(`Error - RecipeRepo :: getRecipesWithoutProducts - ${error.stack}`);
+      throw error;
+    }
+  } 
+  
 }
 
 module.exports = new RecipeRepo();
