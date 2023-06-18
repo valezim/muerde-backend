@@ -1,8 +1,8 @@
-const {PrismaClient} = require('@prisma/client');
+const BaseRepo = require('./BaseRepo');
 
-class IngredientRepo {
+class IngredientRepo extends BaseRepo {
   constructor() {
-    this.db = new PrismaClient();
+    super();
   }
 
   async save(ingredient) {
@@ -80,6 +80,23 @@ class IngredientRepo {
     }
   }
 
+  async getByIdWithRecipe({idIngredient}) {
+    try {
+      const ingredient = await this.db.Ingredient.findUnique({
+        where: {idIngredient: idIngredient},
+        include: {
+          RecipeIngredient: {
+            include: {recipe: true},
+          },
+        },
+      });
+      return ingredient;
+    } catch (error) {
+      console.log(`Error - IngredientRepo :: getByIdWithRecipe - ${error.stack}`);
+      throw error;
+    }
+  }
+
   async delete({idIngredient}) {
     try {
       await this.db.Ingredient.delete({
@@ -102,7 +119,7 @@ class IngredientRepo {
         },
       });
       const newQuantity = ingredient.totalQuantity - quantity;
-      if(newQuantity < 0) throw new Error('No hay suficiente stock');
+      if (newQuantity < 0) throw new Error('No hay suficiente stock');
       const updatedIngredient = await this.db.Ingredient.update({
         where: {
           idIngredient: idIngredient,

@@ -1,8 +1,8 @@
-const {PrismaClient} = require('@prisma/client');
+const BaseRepo = require('./BaseRepo');
 
-class RecipeRepo {
+class RecipeRepo extends BaseRepo {
   constructor() {
-    this.db = new PrismaClient();
+    super();
   }
 
   async save(recipe) {
@@ -77,7 +77,19 @@ class RecipeRepo {
     }
   }
 
-   async getRecipesWithoutProducts() {
+  async getByProductId({productId}) {
+    try {
+      const recipe = await this.db.Recipe.findFirst({
+        where: {Product: {idProduct: productId}},
+      });
+      return recipe;
+    } catch (error) {
+      console.log(`Error - RecipeRepo :: getByProductId - ${error.stack}`);
+      throw error;
+    }
+  }
+
+  async getRecipesWithoutProducts() {
     try {
       const recipes = await this.db.Recipe.findMany({
         include: {
@@ -89,8 +101,7 @@ class RecipeRepo {
       console.log(`Error - RecipeRepo :: getRecipesWithoutProducts - ${error.stack}`);
       throw error;
     }
-  } 
-  
+  }
 }
 
 module.exports = new RecipeRepo();

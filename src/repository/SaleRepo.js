@@ -1,11 +1,11 @@
-const { PrismaClient } = require('@prisma/client');
+const BaseRepo = require('./BaseRepo');
 
 
 const ProductRepo = require('./ProductRepo');
-const { SALE_STATES } = require('../config/default');
-class SaleRepo {
+
+class SaleRepo extends BaseRepo {
   constructor() {
-    this.db = new PrismaClient();
+    super();
   }
   async getAll() {
     try {
@@ -29,24 +29,24 @@ class SaleRepo {
                   image: true,
                   price: true,
                   tags: true,
-                  catalog: true
-                }
+                  catalog: true,
+                },
               },
-              quantity: true
-            }
+              quantity: true,
+            },
           },
           user: {
             select: {
               idUser: true,
               name: true,
               mail: true,
-              address: true
-            }
-          }
+              address: true,
+            },
+          },
         },
-          orderBy: {
-            start_date: 'desc',
-          }
+        orderBy: {
+          start_date: 'desc',
+        },
 
       });
       return sales;
@@ -56,7 +56,7 @@ class SaleRepo {
     }
   }
 
-  async getById({ idSale }) {
+  async getById({idSale}) {
     try {
       const sale = await this.db.Sale.findUnique({
         where: {
@@ -81,22 +81,22 @@ class SaleRepo {
                   image: true,
                   price: true,
                   tags: true,
-                  catalog: true
-                }
+                  catalog: true,
+                },
               },
-              quantity: true
-            }
+              quantity: true,
+            },
           },
           user: {
             select: {
               idUser: true,
               name: true,
               mail: true,
-              address: true
-            }
-          }
+              address: true,
+            },
+          },
 
-        }
+        },
       });
       return sale;
     } catch (error) {
@@ -105,7 +105,7 @@ class SaleRepo {
     }
   }
 
-  async getSaleByUserId({ idUser }) {
+  async getSaleByUserId({idUser}) {
     try {
       const sale = await this.db.Sale.findMany({
         where: {
@@ -130,21 +130,21 @@ class SaleRepo {
                   image: true,
                   price: true,
                   tags: true,
-                  catalog: true
-                }
+                  catalog: true,
+                },
               },
-              quantity: true
-            }
+              quantity: true,
+            },
           },
           user: {
             select: {
               idUser: true,
               name: true,
               mail: true,
-              address: true
-            }
-          }
-        }
+              address: true,
+            },
+          },
+        },
       });
       return sale;
     } catch (error) {
@@ -154,17 +154,16 @@ class SaleRepo {
   }
 
 
-  async update({ idSale, state }) {
+  async update({idSale, state}) {
     try {
-
       const updatedSale = await this.db.Sale.update({
         where: {
-          idSale: idSale
+          idSale: idSale,
         },
         data: {
           status: state,
-          finish_date: (state == 'DONE_PICK_UP' || state == 'DONE_DELIVERY') ? new Date() : null
-        }
+          finish_date: (state == 'DONE_PICK_UP' || state == 'DONE_DELIVERY') ? new Date() : null,
+        },
       });
       return updatedSale;
     } catch (error) {
@@ -183,25 +182,24 @@ class SaleRepo {
           price: true,
           recipe: {
             select: {
-              idRecipe: true
-            }
-          }
-        }
+              idRecipe: true,
+            },
+          },
+        },
       });
       const recipeIngredients = await this.db.recipeIngredient.findMany({
         where: {
-          recipeId: product.recipe.idRecipe
-        }
+          recipeId: product.recipe.idRecipe,
+        },
       });
       let cost = 0;
       for (let i = 0; i < recipeIngredients.length; i++) {
         cost += await this.ingridientCost(recipeIngredients[i]);
-
       }
       const data = {
         price: product.price,
-        cost: cost
-      }
+        cost: cost,
+      };
       return data;
     } catch (error) {
       console.log(`Error - SaleRepo :: getPriceAndCost - ${error.stack}`);
@@ -212,9 +210,9 @@ class SaleRepo {
   async ingridientCost(recipeIngredient) {
     const ingredient = await this.db.ingredient.findUnique({
       where: {
-        idIngredient: recipeIngredient.ingredientId
-      }
-    })
+        idIngredient: recipeIngredient.ingredientId,
+      },
+    });
     return ingredient.lastPurchaseCost * recipeIngredient.quantity;
   }
 
@@ -223,10 +221,13 @@ class SaleRepo {
       let cost = 0;
       let price = 0;
       for (let i = 0; i < sale.products.length; i++) {
-        const data = await this.getPriceAndCost(sale.products[i].productId)
+        const data = await this.getPriceAndCost(sale.products[i].productId);
         price += data.price * sale.products[i].quantity;
         cost += data.cost * sale.products[i].quantity;
-        await ProductRepo.updateIngredientStock({product: sale.products[i].productId, quantity: sale.products[i].quantity});
+        await ProductRepo.updateIngredientStock({
+          product: sale.products[i].productId,
+          quantity: sale.products[i].quantity,
+        });
       }
       const newSale = await this.db.Sale.create({
         data: {
@@ -235,12 +236,11 @@ class SaleRepo {
           status: 'TODO',
           total_earn_cost: price,
           total_loss_cost: cost,
-          userId: sale.userId
-        }
+          userId: sale.userId,
+        },
       });
 
       return newSale;
-
     } catch (error) {
       console.log(`Error - SaleRepo :: save - ${error.stack}`);
       throw error;

@@ -1,8 +1,8 @@
-const {PrismaClient} = require('@prisma/client');
+const BaseRepo = require('./BaseRepo');
 
-class RecipeIngredientRepo {
+class RecipeIngredientRepo extends BaseRepo {
   constructor() {
-    this.db = new PrismaClient();
+    super();
   }
 
   async save({ingredientId, recipeId, quantity}) {
@@ -21,23 +21,7 @@ class RecipeIngredientRepo {
     }
   }
 
-  // async getByRecipeId(recipeId) {
-  //   console.log("llega id al repo ", recipeId);
-  //   try {
-  //     const recipeIngredients = await this.db.RecipeIngredient.findMany({
-  //       where: {
-  //         recipeId: Number(recipeId),
-  //       },
-  //     });
-  //     return recipeIngredients;
-  //   } catch (error) {
-  //     console.log(`Error - RecipeIngredientRepo :: getByRecipeId - ${error.stack}`);
-  //     throw error;
-  //   }
-  // }
-
   async getByRecipeId(recipeId) {
-    console.log("llega id al repo ", recipeId);
     try {
       const recipeIngredients = await this.db.RecipeIngredient.findMany({
         where: {
@@ -47,14 +31,41 @@ class RecipeIngredientRepo {
           ingredient: true,
         },
       });
-  
+
       return recipeIngredients;
     } catch (error) {
       console.log(`Error - RecipeIngredientRepo :: getByRecipeId - ${error.stack}`);
       throw error;
     }
   }
-  
+
+  async getAllFromRecipeIdWithIngredients(recipeId) {
+    try {
+      const recipeIngredients = await this.db.RecipeIngredient.findMany({
+        where: {recipeId: recipeId},
+        include: {ingredient: true},
+      });
+
+      return recipeIngredients;
+    } catch (error) {
+      console.log(`Error - RecipeIngredientRepo :: getAllFromRecipeIdWithIngredients - ${error.stack}`);
+      throw error;
+    }
+  }
+
+  async getIngredientsFromRecipe(recipeId) {
+    try {
+      const recipe = await this.db.RecipeIngredient.findMany({
+        where: {recipeId: recipeId},
+        include: {ingredient: true},
+      });
+
+      return recipe;
+    } catch (error) {
+      console.log(`Error - RecipeIngredientRepo :: getIngredientsFromRecipe - ${error.stack}`);
+      throw error;
+    }
+  }
 }
 
 module.exports = new RecipeIngredientRepo();

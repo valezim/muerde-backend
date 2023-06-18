@@ -1,5 +1,6 @@
 const IngredientRepo = require('../repository/IngredientRepo');
 const PurchaseIngredientHistoryRepo = require('../repository/PurchaseIngredientHistoryRepo');
+const DynamicProductStockService = require('./DynamicProductStockService');
 const IngredientDTO = require('../dto/IngredientDTO');
 
 class IngredientService {
@@ -67,10 +68,11 @@ class IngredientService {
       const ingredient = await IngredientRepo.getById({idIngredient: ingredientId});
       await IngredientRepo.update({
         totalQuantity: ingredient.totalQuantity + createdPurchaseIngredient.quantity,
-        lastPurchaseCost: createdPurchaseIngredient.cost,
+        lastPurchaseCost: createdPurchaseIngredient.cost / createdPurchaseIngredient.quantity,
         lastPurchaseDate: createdPurchaseIngredient.purchaseDate,
         idIngredient: ingredientId,
       });
+      await DynamicProductStockService.updateProductStatusByIngredient(ingredientId);
       return createdPurchaseIngredient;
     } catch (error) {
       console.log(`Error - IngredientService :: postPurchaseIngredient - ${error.stack}`);

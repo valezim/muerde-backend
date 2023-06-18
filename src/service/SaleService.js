@@ -2,6 +2,7 @@ const SaleRepo = require('../repository/SaleRepo');
 
 const SaleDTO = require('../dto/SaleDTO');
 const SaleProductRepo = require('../repository/SaleProductRepo');
+const DynamicProductStockService = require('./DynamicProductStockService');
 
 class SaleService {
   async getAllSales() {
@@ -15,10 +16,10 @@ class SaleService {
     }
   }
 
-  async getSalesById({ idSale }) {
+  async getSalesById({idSale}) {
     try {
       const idSaleNumber = Number(idSale);
-      const sale = await SaleRepo.getById({ idSale: idSaleNumber });
+      const sale = await SaleRepo.getById({idSale: idSaleNumber});
       return sale;
     } catch (error) {
       console.log(`Error - SaleService :: getSalesById - ${error.stack}`);
@@ -26,10 +27,10 @@ class SaleService {
     }
   }
 
-  async getSalesByUserId({ idUser }) {
+  async getSalesByUserId({idUser}) {
     try {
       const idUserNumber = Number(idUser);
-      const sale = await SaleRepo.getSaleByUserId({ idUser: idUserNumber });
+      const sale = await SaleRepo.getSaleByUserId({idUser: idUserNumber});
       return sale[0];
     } catch (error) {
       console.log(`Error - SaleService :: getSalesByUserId - ${error.stack}`);
@@ -38,13 +39,13 @@ class SaleService {
   }
 
 
-  async putSale({ idSale, state }) {
+  async putSale({idSale, state}) {
     try {
       const idSaleNumber = Number(idSale);
 
       const updatedSale = await SaleRepo.update({
         idSale: idSaleNumber,
-        state
+        state,
       });
 
       return updatedSale;
@@ -55,20 +56,21 @@ class SaleService {
   }
 
 
-  async postSale({ deliveryType, userId, products = [] }) {
+  async postSale({deliveryType, userId, products = []}) {
     try {
       const createdSale = await SaleRepo.save({deliveryType, userId, products});
-      products.forEach((product) => {
-        SaleProductRepo.save({
+      products.forEach(async (product) => {
+        await SaleProductRepo.save({
           saleId: createdSale.idSale,
           productId: product.productId,
-          quantity: product.quantity
-        })
-      })
+          quantity: product.quantity,
+        });
+        await DynamicProductStockService.updateProductStatusByProductId(product.productId);
+      });
       return createdSale;
     } catch (error) {
       console.log(`Error - SaleService :: postSale - ${error.stack}`);
-    throw error;
+      throw error;
     }
   }
 }

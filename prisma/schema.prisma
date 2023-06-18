@@ -46,7 +46,7 @@ model Product {
 model Sale {
   idSale          Int           @id @unique(map: "idSale_UNIQUE") @default(autoincrement())
   start_date      DateTime      @db.DateTime(0)
-  finish_date     DateTime?      @db.DateTime(0)
+  finish_date     DateTime?     @db.DateTime(0)
   status          Status        @default(TODO)
   delivery_type   String        @db.VarChar(250)
   total_earn_cost Float
@@ -120,7 +120,7 @@ model PurchaseIngredientHistory {
   quantity                    Float
   cost                        Float
   ingredientId                Int
-  ingredient                  Ingredient @relation(fields: [ingredientId], references: [idIngredient], onDelete: NoAction, onUpdate: NoAction)
+  ingredient                  Ingredient @relation(fields: [ingredientId], references: [idIngredient], onDelete: Cascade)
 
   @@index([ingredientId], map: "ingredientId_idx")
 }
@@ -130,7 +130,7 @@ model User {
   name         String   @db.VarChar(250)
   mail         String   @db.VarChar(250)
   password     String   @db.VarChar(250)
-  address     String   @db.VarChar(250)
+  address      String   @db.VarChar(250)
   creationDate DateTime @db.DateTime(0)
   role         Role     @default(USER)
   Review       Review[]
