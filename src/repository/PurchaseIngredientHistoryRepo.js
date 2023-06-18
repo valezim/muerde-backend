@@ -1,8 +1,8 @@
-const {PrismaClient, Prisma} = require('@prisma/client');
+const BaseRepo = require('./BaseRepo');
 
-class PurchaseIngredientHistoryRepo {
+class PurchaseIngredientHistoryRepo extends BaseRepo {
   constructor() {
-    this.db = new PrismaClient();
+    super();
   }
 
   async save(purchaseIngredient) {

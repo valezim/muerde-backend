@@ -1,8 +1,8 @@
-const {PrismaClient} = require('@prisma/client');
+const BaseRepo = require('./BaseRepo');
 
-class SaleProductRepo {
+class SaleProductRepo extends BaseRepo {
   constructor() {
-    this.db = new PrismaClient();
+    super();
   }
 
   async save({saleId, productId, quantity}) {
@@ -11,8 +11,8 @@ class SaleProductRepo {
         data: {
           saleId,
           productId,
-          quantity
-        }
+          quantity,
+        },
       });
       return newSaleProduct;
     } catch (error) {

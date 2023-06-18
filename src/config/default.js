@@ -2,4 +2,8 @@ module.exports = {
   UNIT_MEASURES: ['G', 'UN'],
   SALE_STATES: ['TODO', 'WIP', 'DONE_PICK_UP', 'DONE_DELIVERY'],
   DELIVERY_TYPE: ['PICK_UP', 'DELIVERY'],
+  PRODUCT_STATUS_TYPES: {
+    OUT_OF_STOCK: 'OUT_OF_STOCK',
+    ENABLED: 'ENABLED',
+  },
 };

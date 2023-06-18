@@ -1,24 +1,23 @@
-const { PrismaClient } = require('@prisma/client');
+const BaseRepo = require('./BaseRepo');
 const IngredientRepo = require('./IngredientRepo');
 
-class ProductRepo {
+class ProductRepo extends BaseRepo {
   constructor() {
-    this.db = new PrismaClient();
+    super();
   }
 
   async save(product) {
-    console.log("producto a guardar en el repo: ", product);
     try {
       const newProduct = await this.db.product.create({
         data: {
-            title: product.title,
-            description: product.description,
-            image: product.image,
-            price: product.priceNumber,
-            tags: product.tags,
-            status: product.status,
-            recipeId: product.recipeIdNumber,
-            catalogId: product.catalogIdNumber,
+          title: product.title,
+          description: product.description,
+          image: product.image,
+          price: product.priceNumber,
+          tags: product.tags,
+          status: product.status,
+          recipeId: product.recipeIdNumber,
+          catalogId: product.catalogIdNumber,
         },
       });
       return newProduct;
@@ -35,21 +34,32 @@ class ProductRepo {
           idProduct: product.idProduct,
         },
         data: {
-            title: product.title || undefined,
-            price: product.price || undefined,
-            image: product.image || undefined,
-            description: product.description || undefined,
-            tags: product.tags || undefined,
-            catalog_id: product.catalog_id || undefined,
-            status: product.status || undefined
+          title: product.title || undefined,
+          price: product.price || undefined,
+          image: product.image || undefined,
+          description: product.description || undefined,
+          tags: product.tags || undefined,
+          catalog_id: product.catalog_id || undefined,
+          status: product.status || undefined,
         },
       });
-
-      console.log("updated product repo: ", updatedProduct);
 
       return updatedProduct;
     } catch (error) {
       console.log(`Error - ProductRepo :: update - ${error.stack}`);
+      throw error;
+    }
+  }
+
+  async updateStatusByRecipeId(recipeId, newStatus) {
+    try {
+      const updatedProduct = await this.db.Product.update({
+        where: {recipeId: recipeId},
+        data: {status: newStatus},
+      });
+      return updatedProduct;
+    } catch (error) {
+      console.log(`Error - ProductRepo :: updateStatusByRecipeId - ${error.stack}`);
       throw error;
     }
   }
@@ -78,7 +88,19 @@ class ProductRepo {
     }
   }
 
-  async getByIdWithIngredientsId({ idProduct }) {
+  async getByRecipeId({recipeId}) {
+    try {
+      const product = await this.db.Product.findUnique({
+        where: {recipeId: recipeId},
+      });
+      return product;
+    } catch (error) {
+      console.log(`Error - ProductRepo :: getByRecipeId - ${error.stack}`);
+      throw error;
+    }
+  }
+
+  async getByIdWithIngredientsId({idProduct}) {
     try {
       const product = await this.db.Product.findUnique({
         where: {
@@ -87,70 +109,71 @@ class ProductRepo {
         select: {
           recipe: {
             select: {
-              RecipeIngredient:{
+              RecipeIngredient: {
 
-              }
-            }
-          }
-        }
+              },
+            },
+          },
+        },
 
       });
-    return product;
-  } catch(error) {
-    console.log(`Error - ProductRepo :: getById - ${error.stack}`);
-    throw error;
-  }
-}
-  async delete ({ idProduct }) {
-  try {
-    await this.db.Product.delete({
-      where: {
-        idProduct: idProduct,
-      },
-    });
-  } catch (error) {
-    console.log(`Error - ProductRepo :: delete - ${error.stack}`);
-    throw error;
-  }
-}
-
-  async updateIngredientStock({ product, quantity }) {
-  try {
-    const fullProduct = await this.getByIdWithIngredientsId({ idProduct: product })
-    console.log('............................', fullProduct);
-    let quantityToSubstract = 0;
-
-    for (let i = 0; i < fullProduct.recipe.RecipeIngredient.length; i++) {
-      console.log('FULLPRODUCTTTTTTTTTTTTTT', fullProduct.recipe.RecipeIngredient[i])
-      quantityToSubstract = fullProduct.recipe.RecipeIngredient[i].quantity * quantity;
-      await IngredientRepo.updateStock({ idIngredient: fullProduct.recipe.RecipeIngredient[i].ingredientId, quantity: quantityToSubstract });
-
+      return product;
+    } catch (error) {
+      console.log(`Error - ProductRepo :: getById - ${error.stack}`);
+      throw error;
     }
-
-  } catch (error) {
-    console.log(`Error - ProductRepo :: updateIngredientStock - ${error.stack}`);
-    throw error;
   }
-}
-
-async getProductsByRecipeId(recipeId) {
-  console.log("el id que llega al repo ", recipeId);
-  try {
-    const recipeIdNumber = Number(recipeId);
-    const products = await this.db.Product.findMany({
-      where: {
-        recipeId: recipeIdNumber,
-      },
-      include: {
-        catalog: true,
-      },
-    });
-    return products;
-  } catch (error) {
-    console.log(`Error - ProductRepo :: getProductsByRecipeId - ${error.stack}`);
-    throw error;
+  async delete({idProduct}) {
+    try {
+      await this.db.Product.delete({
+        where: {
+          idProduct: idProduct,
+        },
+      });
+    } catch (error) {
+      console.log(`Error - ProductRepo :: delete - ${error.stack}`);
+      throw error;
+    }
   }
-}
+
+  async updateIngredientStock({product, quantity}) {
+    try {
+      const fullProduct = await this.getByIdWithIngredientsId({idProduct: product});
+      console.log('............................', fullProduct);
+      let quantityToSubstract = 0;
+
+      for (let i = 0; i < fullProduct.recipe.RecipeIngredient.length; i++) {
+        console.log('FULLPRODUCTTTTTTTTTTTTTT', fullProduct.recipe.RecipeIngredient[i]);
+        quantityToSubstract = fullProduct.recipe.RecipeIngredient[i].quantity * quantity;
+        await IngredientRepo.updateStock({
+          idIngredient: fullProduct.recipe.RecipeIngredient[i].ingredientId,
+          quantity: quantityToSubstract,
+        });
+      }
+    } catch (error) {
+      console.log(`Error - ProductRepo :: updateIngredientStock - ${error.stack}`);
+      throw error;
+    }
+  }
+
+  async getProductsByRecipeId(recipeId) {
+    console.log('el id que llega al repo ', recipeId);
+    try {
+      const recipeIdNumber = Number(recipeId);
+      const products = await this.db.Product.findMany({
+        where: {
+          recipeId: recipeIdNumber,
+        },
+        include: {
+          catalog: true,
+        },
+      });
+      return products;
+    } catch (error) {
+      console.log(`Error - ProductRepo :: getProductsByRecipeId - ${error.stack}`);
+      throw error;
+    }
+  }
 }
 
 module.exports = new ProductRepo();
