@@ -3,13 +3,17 @@ const RecipeIngredientRepo = require('../repository/RecipeIngredientRepo');
 
 class RecipeService {
   async postRecipe({name, instructions, preparationTimeMinutes, ingredients = []}) {
+    console.log("datos de la receta en el post servicio: ", name, instructions, preparationTimeMinutes, ingredients);
     try {
-      const createdRecipe = await RecipeRepo.save({name, instructions, preparationTimeMinutes, ingredients});
+      const preparationTimeMinutesNumber = Number(preparationTimeMinutes);
+      const createdRecipe = await RecipeRepo.save({name, instructions, preparationTimeMinutesNumber, ingredients});
       ingredients.forEach((ingredient) => {
+        const ingredientIdNumber = Number(ingredient.ingredientId);
+        const quantityNumber = Number(ingredient.quantity);
         RecipeIngredientRepo.save({
-          ingredientId: ingredient.ingredientId,
+          ingredientId: ingredientIdNumber,
           recipeId: createdRecipe.idRecipe,
-          quantity: ingredient.quantity,
+          quantity: quantityNumber,
         });
       });
       return createdRecipe;

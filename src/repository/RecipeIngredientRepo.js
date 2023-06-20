@@ -6,6 +6,7 @@ class RecipeIngredientRepo extends BaseRepo {
   }
 
   async save({ingredientId, recipeId, quantity}) {
+    console.log("save en recipeingredient repo: ", ingredientId, recipeId, quantity);
     try {
       const newRecipeIngredient = await this.db.RecipeIngredient.create({
         data: {
@@ -14,6 +15,7 @@ class RecipeIngredientRepo extends BaseRepo {
           quantity,
         },
       });
+      console.log("save en recipeingredient repo newRecipeIngredient: ", newRecipeIngredient);
       return newRecipeIngredient;
     } catch (error) {
       console.log(`Error - RecipeIngredientRepo :: save - ${error.stack}`);

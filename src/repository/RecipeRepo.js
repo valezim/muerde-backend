@@ -6,12 +6,13 @@ class RecipeRepo extends BaseRepo {
   }
 
   async save(recipe) {
+    console.log("receta que llega al repo: ", recipe);
     try {
       const newRecipe = await this.db.Recipe.create({
         data: {
           name: recipe.name,
           instructions: recipe.instructions,
-          preparationTimeMinutes: recipe.preparationTimeMinutes,
+          preparationTimeMinutes: recipe.preparationTimeMinutesNumber,
         },
       });
       return newRecipe;
