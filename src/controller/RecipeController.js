@@ -3,6 +3,7 @@ const RecipeService = require('../service/RecipeService');
 
 class RecipeController {
   static async postRecipe(req, res) {
+    console.log("req.body.recipe controller: ", req.body.recipe);
     try {
       const newRecipe = humps.camelizeKeys(req.body.recipe);
       const createdRecipe = await RecipeService.postRecipe(newRecipe);
