@@ -145,6 +145,9 @@ class SaleRepo extends BaseRepo {
             },
           },
         },
+        orderBy: {
+          start_date: 'desc',
+        },
       });
       return sale;
     } catch (error) {

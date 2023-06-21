@@ -9,7 +9,7 @@ class DynamicProductStockService {
     const productFromRecipe = await ProductRepo.getByRecipeId({recipeId});
 
     if (
-      productFromRecipe.status === PRODUCT_STATUS_TYPES.OUT_OF_STOCK &&
+      productFromRecipe?.status === PRODUCT_STATUS_TYPES.OUT_OF_STOCK &&
       recipeIngredients.every((recipeIngredient) => {
         return (
           recipeIngredient.ingredient.totalQuantity &&

@@ -31,7 +31,7 @@ class SaleService {
     try {
       const idUserNumber = Number(idUser);
       const sale = await SaleRepo.getSaleByUserId({idUser: idUserNumber});
-      return sale[0];
+      return sale;
     } catch (error) {
       console.log(`Error - SaleService :: getSalesByUserId - ${error.stack}`);
       throw error;
