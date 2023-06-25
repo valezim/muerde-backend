@@ -33,7 +33,7 @@ class ProductService {
       const idProductNumber = Number(idProduct);
       const priceNumber = Number(price);
       const catalogIdNumber = Number(catalog_id);
-      const updatedProduct = await ProductRepo.update({idProduct: idProductNumber, title, priceNumber, image, description, tags, catalogIdNumber, status});
+      const updatedProduct = await ProductRepo.update({idProduct: idProductNumber, title, price: priceNumber, image, description, tags, catalogIdNumber, status});
       console.log('put product servicio: ', updatedProduct);
 
       return updatedProduct;
