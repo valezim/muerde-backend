@@ -24,14 +24,14 @@ class RecipeRepo extends BaseRepo {
 
   async update(recipe) {
     try {
-      const updatedRecipe =await this.db.Recipe.update({
+      const updatedRecipe = await this.db.Recipe.update({
         where: {
           idRecipe: recipe.idRecipe,
         },
         data: {
-          name: recipe.name|| undefined,
-          instructions: recipe.instructions|| undefined,
-          preparationTimeMinutes: recipe.preparationTimeMinutes|| undefined,
+          name: recipe.name || undefined,
+          instructions: recipe.instructions || undefined,
+          preparationTimeMinutes: recipe.preparationTimeMinutes || undefined,
         },
       });
       return updatedRecipe;

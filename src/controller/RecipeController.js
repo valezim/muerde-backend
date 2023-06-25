@@ -3,7 +3,6 @@ const RecipeService = require('../service/RecipeService');
 
 class RecipeController {
   static async postRecipe(req, res) {
-    console.log("req.body.recipe controller: ", req.body.recipe);
     try {
       const newRecipe = humps.camelizeKeys(req.body.recipe);
       const createdRecipe = await RecipeService.postRecipe(newRecipe);
@@ -20,8 +19,8 @@ class RecipeController {
     try {
       const idRecipe = req.query.id;
       const recipe = humps.camelizeKeys(req.body.recipe);
+      console.log("la nueva receta en el controller: ", recipe);
       const updatedRecipe = await RecipeService.putRecipe({...recipe, idRecipe});
-
       return res.json({...humps.decamelizeKeys(updatedRecipe)});
     } catch (error) {
       console.log(`Error - RecipeController :: putRecipe - ${error}`);
