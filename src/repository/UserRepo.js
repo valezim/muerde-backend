@@ -16,6 +16,14 @@ class UserRepo extends BaseRepo {
                     role: "USER",
                     address: user.address,
                 },
+                select: {
+                    idUser: true,
+                    name: true,
+                    mail: true,
+                    creationDate: true,
+                    role: true,
+                    address: true,
+                }
             });
             return newUser;
         } catch (error) {
