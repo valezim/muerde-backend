@@ -68,6 +68,26 @@ class RecipeIngredientRepo extends BaseRepo {
       throw error;
     }
   }
+
+  async update (recipeId, ingredientId, quantity) {
+    try {
+      const updatedRecipeIngredient = await this.db.RecipeIngredient.update({
+        where: {
+          recipeId_ingredientId: {
+            recipeId: recipeId,
+            ingredientId: ingredientId
+          }
+        },
+        data: {
+          quantity
+        },
+      });
+      return updatedRecipeIngredient;
+    } catch (error) {
+      console.log(`Error - RecipeIngredientRepo :: update - ${error.stack}`);
+      throw error;
+    }
+  }
 }
 
 module.exports = new RecipeIngredientRepo();
