@@ -22,7 +22,6 @@ class ProductController {
             const idProduct = req.query.id;
             const Product = humps.camelizeKeys(req.body.product);
             const updatedProduct = await ProductService.putProduct({ ...Product, idProduct });
-
             return res.json({ ...humps.decamelizeKeys(updatedProduct) });
         } catch (error) {
             console.log(`Error - ProductController :: putProduct - ${error}`);
