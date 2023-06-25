@@ -15,7 +15,7 @@ const postRecipeSchema = Joi.object({
 const putRecipeSchema = Joi.object({
   name: Joi.string(),
   instructions: Joi.string(),
-  preparation_time_minutes: Joi.number().integer().positive(),
+  preparationTimeMinutes: Joi.number().integer().positive(),
   ingredients: Joi.array().items(ingredientSchema),
 });
 
