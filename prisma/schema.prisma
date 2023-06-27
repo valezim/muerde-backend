@@ -129,7 +129,7 @@ model PurchaseIngredientHistory {
 model User {
   idUser       Int      @unique(map: "idUser_UNIQUE") @default(autoincrement())
   name         String   @db.VarChar(250)
-  mail         String   @db.VarChar(250)
+  mail         String   @db.VarChar(250) @unique
   password     String   @db.VarChar(250)
   address      String   @db.VarChar(250)
   creationDate DateTime @db.DateTime(0)

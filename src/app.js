@@ -10,6 +10,7 @@ const recipeRoute = require('./route/RecipeRoute');
 const productRoute = require('./route/ProductRoute');
 const saleRoute = require('./route/saleRoute');
 const catalogRoute = require('./route/CatalogRoute');
+const userRoute = require('./route/UserRoute');
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use('/recipe', recipeRoute);
 app.use('/product', productRoute);
 app.use('/sale', saleRoute);
 app.use('/catalog', catalogRoute);
+app.use('/user', userRoute);
 
 const port = 8000;
 app.listen(port, () => console.log(`Server is running on port ${port}`));
