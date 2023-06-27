@@ -18,6 +18,7 @@ class ProductRepo extends BaseRepo {
           status: product.status,
           recipeId: product.recipeIdNumber,
           catalogId: product.catalogIdNumber,
+          isOutOfStock: product.isOutOfStock,
         },
       });
       return newProduct;
@@ -28,8 +29,9 @@ class ProductRepo extends BaseRepo {
   }
 
   async update(product) {
+    const shouldUpdateOOS = product?.isOutOfStock === true || product?.isOutOfStock === false;
     try {
-      const updatedProduct =await this.db.product.update({
+      const updatedProduct = await this.db.product.update({
         where: {
           idProduct: product.idProduct,
         },
@@ -41,6 +43,7 @@ class ProductRepo extends BaseRepo {
           tags: product.tags || undefined,
           catalog_id: product.catalog_id || undefined,
           status: product.status || undefined,
+          isOutOfStock: shouldUpdateOOS ? product.isOutOfStock : undefined,
         },
       });
 
@@ -51,15 +54,15 @@ class ProductRepo extends BaseRepo {
     }
   }
 
-  async updateStatusByRecipeId(recipeId, newStatus) {
+  async updateOOSByRecipeId(recipeId, newOOS) {
     try {
       const updatedProduct = await this.db.Product.update({
         where: {recipeId: recipeId},
-        data: {status: newStatus},
+        data: {isOutOfStock: newOOS},
       });
       return updatedProduct;
     } catch (error) {
-      console.log(`Error - ProductRepo :: updateStatusByRecipeId - ${error.stack}`);
+      console.log(`Error - ProductRepo :: updateOOSByRecipeId - ${error.stack}`);
       throw error;
     }
   }

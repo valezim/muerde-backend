@@ -72,7 +72,7 @@ class IngredientService {
         lastPurchaseDate: createdPurchaseIngredient.purchaseDate,
         idIngredient: ingredientId,
       });
-      await DynamicProductStockService.updateProductStatusByIngredient(ingredientId);
+      await DynamicProductStockService.updateProductOOSByIngredient(ingredientId);
       return createdPurchaseIngredient;
     } catch (error) {
       console.log(`Error - IngredientService :: postPurchaseIngredient - ${error.stack}`);

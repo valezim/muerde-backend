@@ -1,23 +1,23 @@
 const ProductRepo = require('../repository/ProductRepo');
 const DynamicProductStockService = require('./DynamicProductStockService');
-const {PRODUCT_STATUS_TYPES} = require('../config/default');
 
 class ProductService {
-  async postProduct({title, description, image, price, tags, recipeId, catalogId}) {
+  async postProduct({title, description, image, price, tags, status, recipeId, catalogId}) {
     try {
       const priceNumber = Number(price);
       const recipeIdNumber = Number(recipeId);
       const catalogIdNumber = Number(catalogId);
-      const status = await DynamicProductStockService.isRecipeAvailableFromIngredientsStock(recipeIdNumber) ?
-       PRODUCT_STATUS_TYPES.ENABLED :
-       PRODUCT_STATUS_TYPES.OUT_OF_STOCK;
+      const isOutOfStock = await DynamicProductStockService.isRecipeAvailableFromIngredientsStock(recipeIdNumber) ?
+       false :
+       true;
       const createdProduct = await ProductRepo.save({
         title,
         description,
         image,
         priceNumber,
         tags,
-        status,
+        status: status || 'ENABLED',
+        isOutOfStock,
         recipeIdNumber,
         catalogIdNumber,
       });
