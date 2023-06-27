@@ -26,18 +26,19 @@ model Catalog {
 }
 
 model Product {
-  idProduct   Int           @id @unique(map: "idProduct_UNIQUE") @default(autoincrement())
-  title       String        @db.VarChar(250)
-  description String?       @db.VarChar(250)
-  image       String?       @db.VarChar(250)
-  price       Float
-  tags        String?       @db.VarChar(250)
-  status      String        @db.VarChar(250)
-  recipeId    Int           @unique
-  catalogId   Int?
-  catalog     Catalog?      @relation(fields: [catalogId], references: [idCatalog], onDelete: NoAction, onUpdate: NoAction)
-  recipe      Recipe        @relation(fields: [recipeId], references: [idRecipe], onDelete: NoAction, onUpdate: NoAction)
-  sales       SaleProduct[]
+  idProduct    Int           @id @unique(map: "idProduct_UNIQUE") @default(autoincrement())
+  title        String        @db.VarChar(250)
+  description  String?       @db.VarChar(250)
+  image        String?       @db.VarChar(250)
+  price        Float
+  tags         String?       @db.VarChar(250)
+  status       String        @db.VarChar(250)
+  isOutOfStock Boolean       @default(false)
+  recipeId     Int           @unique
+  catalogId    Int?
+  catalog      Catalog?      @relation(fields: [catalogId], references: [idCatalog], onDelete: NoAction, onUpdate: NoAction)
+  recipe       Recipe        @relation(fields: [recipeId], references: [idRecipe], onDelete: NoAction, onUpdate: NoAction)
+  sales        SaleProduct[]
 
   @@index([recipeId], map: "recipeId_idx")
   @@index([catalogId], map: "catalogId_idx")

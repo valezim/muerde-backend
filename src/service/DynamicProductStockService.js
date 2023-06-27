@@ -2,14 +2,13 @@ const IngredientRepo = require('../repository/IngredientRepo');
 const RecipeIngredientRepo = require('../repository/RecipeIngredientRepo');
 const RecipeRepo = require('../repository/RecipeRepo');
 const ProductRepo = require('../repository/ProductRepo');
-const {PRODUCT_STATUS_TYPES} = require('../config/default');
 
 class DynamicProductStockService {
-  async changeProductStatusToEnabledIfNeeded(recipeId, recipeIngredients) {
+  async changeProductOOSToEnabledIfNeeded(recipeId, recipeIngredients) {
     const productFromRecipe = await ProductRepo.getByRecipeId({recipeId});
 
     if (
-      productFromRecipe?.status === PRODUCT_STATUS_TYPES.OUT_OF_STOCK &&
+      productFromRecipe?.isOutOfStock &&
       recipeIngredients.every((recipeIngredient) => {
         return (
           recipeIngredient.ingredient.totalQuantity &&
@@ -18,13 +17,13 @@ class DynamicProductStockService {
       })
     ) {
       const updatedProduct = await ProductRepo.update({
-        idProduct: productFromRecipe.idProduct, status: 'ENABLED',
+        idProduct: productFromRecipe.idProduct, isOutOfStock: false,
       });
-      console.log(`Product with ID ${updatedProduct.idProduct} is now ENABLED`);
+      console.log(`Product with ID ${updatedProduct.idProduct} is now in stock`);
     }
   }
 
-  async checkProductNewStatusFromRecipe(recipe, ingredientId) {
+  async checkProductNewOOSFromRecipe(recipe, ingredientId) {
     const recipeIngredients = await RecipeIngredientRepo.getAllFromRecipeIdWithIngredients(recipe.idRecipe);
 
     // Check if recipe is considered Out of Stock according to
@@ -39,16 +38,16 @@ class DynamicProductStockService {
     // if recipe is considered Out of Stock, change product status to OUT_OF_STOCK.
     // if not, check if status should be changed to ENABLED.
     if (outOfStock) {
-      const updatedProduct = await ProductRepo.updateStatusByRecipeId(
-          recipe.idRecipe, PRODUCT_STATUS_TYPES.OUT_OF_STOCK,
+      const updatedProduct = await ProductRepo.updateOOSByRecipeId(
+          recipe.idRecipe, true,
       );
       console.log(`Product with ID ${updatedProduct.idProduct} is now OUT_OF_STOCK`);
     } else {
-      this.changeProductStatusToEnabledIfNeeded(recipe.idRecipe, recipeIngredients);
+      this.changeProductOOSToEnabledIfNeeded(recipe.idRecipe, recipeIngredients);
     }
   }
 
-  async updateProductStatusByIngredient(ingredientId) {
+  async updateProductOOSByIngredient(ingredientId) {
     const ingredientWithRecipe = await IngredientRepo.getByIdWithRecipe({idIngredient: ingredientId});
 
     const allRecipesFromIngredient = ingredientWithRecipe.RecipeIngredient.map(
@@ -56,11 +55,11 @@ class DynamicProductStockService {
     );
 
     allRecipesFromIngredient.forEach(async (recipe) => {
-      this.checkProductNewStatusFromRecipe(recipe, ingredientId);
+      this.checkProductNewOOSFromRecipe(recipe, ingredientId);
     });
   }
 
-  async updateProductStatusByProductId(productId) {
+  async updateProductOOSByProductId(productId) {
     const product = await ProductRepo.getById({idProduct: productId});
     const recipe = await RecipeRepo.getByProductId({productId});
 
@@ -78,14 +77,14 @@ class DynamicProductStockService {
     });
 
     if (outOfStock) {
-      if (product.status !== PRODUCT_STATUS_TYPES.OUT_OF_STOCK) {
+      if (!product.isOutOfStock) {
         const updatedProduct = await ProductRepo.update(
-            {idProduct: productId, status: PRODUCT_STATUS_TYPES.OUT_OF_STOCK},
+            {idProduct: productId, isOutOfStock: true},
         );
         console.log(`Product with ID ${updatedProduct.idProduct} is now OUT_OF_STOCK`);
       }
     } else {
-      this.changeProductStatusToEnabledIfNeeded(recipe.idRecipe, recipeIngredients);
+      this.changeProductOOSToEnabledIfNeeded(recipe.idRecipe, recipeIngredients);
     }
   }
 

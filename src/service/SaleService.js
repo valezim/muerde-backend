@@ -65,7 +65,7 @@ class SaleService {
           productId: product.productId,
           quantity: product.quantity,
         });
-        await DynamicProductStockService.updateProductStatusByProductId(product.productId);
+        await DynamicProductStockService.updateProductOOSByProductId(product.productId);
       });
       return createdSale;
     } catch (error) {
