@@ -13,6 +13,7 @@ class SaleRepo extends BaseRepo {
         select: {
           idSale: true,
           start_date: true,
+          user_date: true,
           finish_date: true,
           status: true,
           delivery_type: true,
@@ -65,6 +66,7 @@ class SaleRepo extends BaseRepo {
         select: {
           idSale: true,
           start_date: true,
+          user_date: true,
           finish_date: true,
           status: true,
           delivery_type: true,
@@ -114,6 +116,7 @@ class SaleRepo extends BaseRepo {
         select: {
           idSale: true,
           start_date: true,
+          user_date: true,
           finish_date: true,
           status: true,
           delivery_type: true,
@@ -165,7 +168,7 @@ class SaleRepo extends BaseRepo {
         },
         data: {
           status: state,
-          finish_date: (state == 'DONE_PICK_UP' || state == 'DONE_DELIVERY') ? new Date() : null,
+          finish_date: state == 'FINISHED' ? new Date() : null,
         },
       });
       return updatedSale;
@@ -232,9 +235,12 @@ class SaleRepo extends BaseRepo {
           quantity: sale.products[i].quantity,
         });
       }
+
+      const dateAsDateTime = new Date(sale.userDate);
       const newSale = await this.db.Sale.create({
         data: {
           start_date: new Date(),
+          user_date: dateAsDateTime,
           delivery_type: sale.deliveryType,
           status: 'TODO',
           total_earn_cost: price,

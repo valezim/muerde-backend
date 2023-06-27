@@ -142,11 +142,9 @@ class ProductRepo extends BaseRepo {
   async updateIngredientStock({product, quantity}) {
     try {
       const fullProduct = await this.getByIdWithIngredientsId({idProduct: product});
-      console.log('............................', fullProduct);
       let quantityToSubstract = 0;
 
       for (let i = 0; i < fullProduct.recipe.RecipeIngredient.length; i++) {
-        console.log('FULLPRODUCTTTTTTTTTTTTTT', fullProduct.recipe.RecipeIngredient[i]);
         quantityToSubstract = fullProduct.recipe.RecipeIngredient[i].quantity * quantity;
         await IngredientRepo.updateStock({
           idIngredient: fullProduct.recipe.RecipeIngredient[i].ingredientId,

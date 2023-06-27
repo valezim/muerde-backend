@@ -47,9 +47,10 @@ model Product {
 model Sale {
   idSale          Int           @id @unique(map: "idSale_UNIQUE") @default(autoincrement())
   start_date      DateTime      @db.DateTime(0)
+  user_date       DateTime?      @db.DateTime(0)
   finish_date     DateTime?     @db.DateTime(0)
   status          Status        @default(TODO)
-  delivery_type   String        @db.VarChar(250)
+  delivery_type   DeliveryType  @default(PICK_UP)
   total_earn_cost Float
   total_loss_cost Float
   userId          Int
@@ -153,4 +154,9 @@ enum Status {
   WIP
   DONE_PICK_UP
   DONE_DELIVERY
+  FINISHED
+}
+enum DeliveryType {
+  PICK_UP
+  DELIVERY
 }

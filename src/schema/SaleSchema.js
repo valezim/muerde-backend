@@ -10,6 +10,7 @@ const productSchema = Joi.object({
 const postSaleSchema = Joi.object({
   delivery_type: Joi.string().valid(...DELIVERY_TYPE),
   user_id: Joi.number().integer(),
+  user_date: Joi.date(),
   products: Joi.array().items(productSchema).required()
 });
 

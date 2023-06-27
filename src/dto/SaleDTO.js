@@ -3,6 +3,7 @@ class SaleDTO {
     constructor(saleData = {}) {
       this.idSale = saleData.idSale;
       this.start_date = saleData.start_date;
+      this.user_date = saleData.user_date;
       this.finish_date = saleData.finish_date;
       this.status = saleData.status;
       this.delivery_type = saleData.delivery_type;

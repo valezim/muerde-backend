@@ -56,9 +56,9 @@ class SaleService {
   }
 
 
-  async postSale({deliveryType, userId, products = []}) {
+  async postSale({deliveryType, userId, userDate, products = []}) {
     try {
-      const createdSale = await SaleRepo.save({deliveryType, userId, products});
+      const createdSale = await SaleRepo.save({deliveryType, userId, userDate, products});
       products.forEach(async (product) => {
         await SaleProductRepo.save({
           saleId: createdSale.idSale,
