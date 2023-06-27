@@ -14,6 +14,26 @@ class UserService {
             throw error;
         }
     }
+
+    static async getUserByMail(mail, password) {
+        try {
+            const user = await UserRepo.getUserByMail(mail);
+            if (user) {
+                const isPasswordValid = await bcrypt.compare(password, user.password);
+                if (isPasswordValid) {
+                    const { password, ...userWithoutPassword } = user;
+                    return userWithoutPassword;
+                } else {
+                    throw { status: 401, message: 'Invalid password' };
+                }
+            } else {
+                throw { status: 404, message: 'User not found' };
+            }
+        } catch (error) {
+            console.log(`Error - UserService :: getUserByMail - ${error.stack}`);
+            throw error;
+        }
+    }
 }
 
 module.exports = UserService;

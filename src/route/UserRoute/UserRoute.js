@@ -12,4 +12,6 @@ const UserController = require('../../controller/UserController');
 
 router.route('/').post(validatePostUser, UserController.postUser);
 
+router.post('/login', UserController.getUserByMail);
+
 module.exports = router;

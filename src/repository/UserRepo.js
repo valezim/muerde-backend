@@ -31,6 +31,29 @@ class UserRepo extends BaseRepo {
             throw error;
         }
     }
+
+    async getUserByMail(mail) {
+        try {
+            const user = await this.db.user.findUnique({
+                where: {
+                    mail: mail,
+                },
+                select: {
+                    idUser: true,
+                    name: true,
+                    mail: true,
+                    password: true,
+                    creationDate: true,
+                    role: true,
+                    address: true,
+                }
+            });
+            return user;
+        } catch (error) {
+            console.log(`Error - UserRepo :: getUserByMail - ${error.stack}`);
+            throw error;
+        }
+    }
 }
 
 module.exports = new UserRepo();
