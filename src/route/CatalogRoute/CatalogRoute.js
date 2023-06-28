@@ -3,7 +3,7 @@ const router = express.Router();
 const {
   validatePostCatalog,
   validatePutCatalog,
-} = require('./middlewares/CatalogValidator');
+} = require('./middlewares/catalogValidator');
 
 const {
   generalQueryValidator,
