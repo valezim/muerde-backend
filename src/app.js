@@ -29,5 +29,5 @@ app.use('/sale', saleRoute);
 app.use('/catalog', catalogRoute);
 app.use('/user', userRoute);
 
-const port = 8000;
+const port = process.env.port || 8000;
 app.listen(port, () => console.log(`Server is running on port ${port}`));
