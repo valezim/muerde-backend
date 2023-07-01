@@ -47,7 +47,7 @@ model Product {
 model Sale {
   idSale          Int           @id @unique(map: "idSale_UNIQUE") @default(autoincrement())
   start_date      DateTime      @db.DateTime(0)
-  user_date       DateTime?      @db.DateTime(0)
+  user_date       DateTime?     @db.DateTime(0)
   finish_date     DateTime?     @db.DateTime(0)
   status          Status        @default(TODO)
   delivery_type   DeliveryType  @default(PICK_UP)
@@ -130,7 +130,7 @@ model PurchaseIngredientHistory {
 model User {
   idUser       Int      @unique(map: "idUser_UNIQUE") @default(autoincrement())
   name         String   @db.VarChar(250)
-  mail         String   @db.VarChar(250) @unique
+  mail         String   @unique @db.VarChar(250)
   password     String   @db.VarChar(250)
   address      String   @db.VarChar(250)
   creationDate DateTime @db.DateTime(0)
@@ -156,6 +156,7 @@ enum Status {
   DONE_DELIVERY
   FINISHED
 }
+
 enum DeliveryType {
   PICK_UP
   DELIVERY
