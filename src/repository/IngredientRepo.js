@@ -119,7 +119,7 @@ class IngredientRepo extends BaseRepo {
         },
       });
       const newQuantity = ingredient.totalQuantity - quantity;
-      if (newQuantity < 0) throw new Error('No hay suficiente stock');
+      if (newQuantity < 0) throw new Error('INSUFFICIENT_STOCK: No hay suficiente stock');
       const updatedIngredient = await this.db.Ingredient.update({
         where: {
           idIngredient: idIngredient,
