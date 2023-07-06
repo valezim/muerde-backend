@@ -75,7 +75,6 @@ class RecipeService {
   }
 
   async getRecipeIngredients(idRecipe) {
-    console.log("llega id al servicio ", idRecipe);
     try {
       const recipeIngredients = await RecipeIngredientRepo.getByRecipeId(idRecipe);
       return recipeIngredients;

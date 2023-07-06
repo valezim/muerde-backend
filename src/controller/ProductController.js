@@ -63,7 +63,6 @@ class ProductController {
     }
 
     static async getProductsByRecipeId(req, res) {
-        console.log("el id que llega al contoller ", req.query);
         try {
             const recipeId = req.query.id;
             const products = await ProductService.getProductsByRecipeId(recipeId);
