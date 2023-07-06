@@ -62,7 +62,6 @@ class RecipeController {
   }
 
   static async getRecipeIngredients(req, res) {
-    console.log("id de la receta: ", req.query.id);
     try{
       const idRecipe = req.query.id;
       const recipeIngredients = await RecipeService.getRecipeIngredients(idRecipe);
