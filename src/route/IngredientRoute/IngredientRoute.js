@@ -11,7 +11,8 @@ const {
 
 const {
   generalQueryValidator,
-  generalQueryValidatorIdRequired} = require('../middlewares/commonValidatorMiddlewares');
+  generalQueryValidatorIdRequired,
+} = require('../middlewares/commonValidatorMiddlewares');
 
 const IngredientController = require('../../controller/IngredientController');
 

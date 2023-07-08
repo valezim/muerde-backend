@@ -8,6 +8,23 @@ class IngredientDTO {
     this.totalQuantity = ingredientData.totalQuantity;
     this.lastPurchaseDate = ingredientData.lastPurchaseDate;
     this.recipie_using_count = ingredientData.RecipeIngredient?.length;
+    this.stock_percentage_status = this.getStockPercentageStatus(ingredientData);
+  }
+
+  getStockPercentageStatus(ingredientData) {
+    const requiredQuantity = ingredientData.RecipeIngredient.reduce((sum, recipeIngredient) => {
+      return sum + recipeIngredient.quantity * 5;
+    }, 0);
+
+    let stockPercentageStatus;
+    if (requiredQuantity === 0) {
+      stockPercentageStatus = 100;
+    } else {
+      stockPercentageStatus = (ingredientData.totalQuantity / requiredQuantity) * 100;
+      stockPercentageStatus = Math.min(stockPercentageStatus, 100);
+    }
+
+    return stockPercentageStatus;
   }
 }
 

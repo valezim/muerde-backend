@@ -4,16 +4,16 @@ const DynamicProductStockService = require('./DynamicProductStockService');
 const IngredientDTO = require('../dto/IngredientDTO');
 
 class IngredientService {
-  async postIngredient({name, unit}) {
+  async postIngredient({ name, unit }) {
     try {
-      const createdIngredient = await IngredientRepo.save({name, unit, totalQuantity: 0});
+      const createdIngredient = await IngredientRepo.save({ name, unit, totalQuantity: 0 });
       return createdIngredient;
     } catch (error) {
       console.log(`Error - IngredientService :: postIngredient - ${error.stack}`);
       throw error;
     }
   }
-  async putIngredient({idIngredient, name, unit, lastPurchaseCost, totalQuantity}) {
+  async putIngredient({ idIngredient, name, unit, lastPurchaseCost, totalQuantity }) {
     try {
       const idIngredientNumber = Number(idIngredient);
       const updatedIngredient = await IngredientRepo.update({
@@ -41,10 +41,10 @@ class IngredientService {
     }
   }
 
-  async getIngredientById({idIngredient}) {
+  async getIngredientById({ idIngredient }) {
     try {
       const idIngredientNumber = Number(idIngredient);
-      const ingredient = await IngredientRepo.getById({idIngredient: idIngredientNumber});
+      const ingredient = await IngredientRepo.getById({ idIngredient: idIngredientNumber });
       return ingredient;
     } catch (error) {
       console.log(`Error - IngredientService :: getIngredientById - ${error.stack}`);
@@ -52,20 +52,20 @@ class IngredientService {
     }
   }
 
-  async deleteIngredient({idIngredient}) {
+  async deleteIngredient({ idIngredient }) {
     try {
       const idIngredientNumber = Number(idIngredient);
-      await IngredientRepo.delete({idIngredient: idIngredientNumber});
+      await IngredientRepo.delete({ idIngredient: idIngredientNumber });
     } catch (error) {
       console.log(`Error - IngredientService :: deleteIngredient - ${error.stack}`);
       throw error;
     }
   }
 
-  async postPurchaseIngredient({quantity, cost, ingredientId}) {
+  async postPurchaseIngredient({ quantity, cost, ingredientId }) {
     try {
-      const createdPurchaseIngredient = await PurchaseIngredientHistoryRepo.save({quantity, cost, ingredientId});
-      const ingredient = await IngredientRepo.getById({idIngredient: ingredientId});
+      const createdPurchaseIngredient = await PurchaseIngredientHistoryRepo.save({ quantity, cost, ingredientId });
+      const ingredient = await IngredientRepo.getById({ idIngredient: ingredientId });
       await IngredientRepo.update({
         totalQuantity: ingredient.totalQuantity + createdPurchaseIngredient.quantity,
         lastPurchaseCost: createdPurchaseIngredient.cost / createdPurchaseIngredient.quantity,
