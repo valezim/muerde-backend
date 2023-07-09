@@ -15,6 +15,7 @@ class UserRepo extends BaseRepo {
                     creationDate: new Date(),
                     role: "USER",
                     address: user.address,
+                    phone: user.phone,
                 },
                 select: {
                     idUser: true,
@@ -23,6 +24,7 @@ class UserRepo extends BaseRepo {
                     creationDate: true,
                     role: true,
                     address: true,
+                    phone: true,
                 }
             });
             return newUser;
@@ -46,6 +48,7 @@ class UserRepo extends BaseRepo {
                     creationDate: true,
                     role: true,
                     address: true,
+                    phone: true,
                 }
             });
             return user;
