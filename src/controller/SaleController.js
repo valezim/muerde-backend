@@ -97,6 +97,20 @@ class SaleController {
       });
     }
   }
+
+  static async getTotalSalesByCustomerBetweenDates(req, res) {
+    try {
+      const { start, end } = req.query;
+      const totalSalesByCustomer = await SaleService.getTotalSalesByCustomerBetweenDates(start, end);
+      return res.json({ sales_by_customer: humps.decamelizeKeys(totalSalesByCustomer) });
+    } catch (error) {
+      console.log(`Error - SaleController :: getTotalSalesByCustomerBetweenDates - ${error}`);
+      return res.status(error.status || 500).json({
+        error: 'Unexpected error while trying to get total sales by customer',
+        stack: error.stack,
+      });
+    }
+  }
 }
 
 

@@ -13,7 +13,7 @@ class UserRepo extends BaseRepo {
                     mail: user.mail,
                     password: user.password,
                     creationDate: new Date(),
-                    role: "USER",
+                    role: 'USER',
                     address: user.address,
                 },
                 select: {
@@ -23,7 +23,7 @@ class UserRepo extends BaseRepo {
                     creationDate: true,
                     role: true,
                     address: true,
-                }
+                },
             });
             return newUser;
         } catch (error) {
@@ -46,11 +46,25 @@ class UserRepo extends BaseRepo {
                     creationDate: true,
                     role: true,
                     address: true,
-                }
+                },
             });
             return user;
         } catch (error) {
             console.log(`Error - UserRepo :: getUserByMail - ${error.stack}`);
+            throw error;
+        }
+    }
+
+    async getById({ idUser }) {
+        try {
+            const user = await this.db.user.findUnique({
+                where: {
+                    idUser: idUser,
+                },
+            });
+            return user;
+        } catch (error) {
+            console.log(`Error - UserRepo :: getById - ${error.stack}`);
             throw error;
         }
     }

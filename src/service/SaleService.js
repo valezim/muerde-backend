@@ -3,6 +3,7 @@ const SaleRepo = require('../repository/SaleRepo');
 const SaleDTO = require('../dto/SaleDTO');
 const SaleProductRepo = require('../repository/SaleProductRepo');
 const DynamicProductStockService = require('./DynamicProductStockService');
+const UserService = require('./UserService');
 
 class SaleService {
   async getAllSales() {
@@ -84,6 +85,39 @@ class SaleService {
       }));
     } catch (error) {
       console.log(`Error - SaleService :: getTotalProgressStatus - ${error.stack}`);
+      throw error;
+    }
+  }
+
+  async getTotalSalesByCustomerBetweenDates(startDate, endDate) {
+    try {
+      if (!startDate) {
+        const currentDate = new Date();
+        startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+      }
+
+      if (!endDate) {
+        endDate = new Date();
+      }
+
+      if (new Date(endDate) < new Date(startDate)) {
+        endDate = startDate;
+      }
+
+      const salesByCustomer = await SaleRepo.getTotalSalesByCustomerBetweenDates(startDate, endDate);
+
+      const salesWithUser = await Promise.all(salesByCustomer.map(async (sale) => {
+        const user = await UserService.getById(sale?.userId);
+        return {
+          id_user: sale?.userId,
+          name: user?.name,
+          sales: sale?._count?.idSale,
+        };
+      }));
+
+      return salesWithUser;
+    } catch (error) {
+      console.log(`Error - SaleService :: getTotalSalesByCustomerBetweenDates - ${error.stack}`);
       throw error;
     }
   }

@@ -269,6 +269,31 @@ class SaleRepo extends BaseRepo {
       throw error;
     }
   }
+
+  async getTotalSalesByCustomerBetweenDates(startDate, endDate) {
+    try {
+      const formattedStartDate = new Date(startDate).toISOString();
+      const formattedEndDate = new Date(endDate).toISOString();
+
+      const totalSalesByCustomer = await this.db.sale.groupBy({
+        by: ['userId'],
+        where: {
+          start_date: {
+            lte: formattedStartDate,
+          },
+          start_date: {
+            lte: formattedEndDate,
+          },
+        },
+        _count: { idSale: true },
+      });
+
+      return totalSalesByCustomer;
+    } catch (error) {
+      console.log(`Error - IngredientRepo :: getTotalSalesByCustomerBetweenDates - ${error.stack}`);
+      throw error;
+    }
+  }
 }
 
 
