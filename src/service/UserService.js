@@ -2,6 +2,16 @@ const UserRepo = require('../repository/UserRepo');
 const bcrypt = require('bcrypt');
 
 class UserService {
+    static async getUsers() {
+        try {
+            const users = await UserRepo.getUsers();
+            return users;
+        } catch (error) {
+            console.log(`Error - UserService :: getUsers - ${error.stack}`);
+            throw error;
+        }
+    }
+
     static async postUser(user) {
         const saltRounds = 10; 
         const hashedPassword = await bcrypt.hash(user.password, saltRounds);

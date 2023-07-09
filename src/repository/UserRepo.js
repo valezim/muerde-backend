@@ -5,6 +5,26 @@ class UserRepo extends BaseRepo {
         super();
     }
 
+    async getUsers() {
+        try {
+            const users = await this.db.user.findMany({
+                select: {
+                    idUser: true,
+                    name: true,
+                    mail: true,
+                    address: true,
+                    phone: true,
+                    creationDate: true,
+                    role: true,
+                }
+            });
+            return users;
+        } catch (error) {
+            console.log(`Error - UserRepo :: getUsers - ${error.stack}`);
+            throw error;
+        }
+    }
+
     async save(user) {
         try {
             const newUser = await this.db.user.create({
