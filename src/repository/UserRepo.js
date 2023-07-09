@@ -12,19 +12,19 @@ class UserRepo extends BaseRepo {
                     name: user.name,
                     mail: user.mail,
                     password: user.password,
-                    creationDate: new Date(),
-                    role: "USER",
                     address: user.address,
                     phone: user.phone,
+                    creationDate: new Date(),
+                    role: "USER",
                 },
                 select: {
                     idUser: true,
                     name: true,
                     mail: true,
-                    creationDate: true,
-                    role: true,
                     address: true,
                     phone: true,
+                    creationDate: true,
+                    role: true,
                 }
             });
             return newUser;
@@ -45,10 +45,10 @@ class UserRepo extends BaseRepo {
                     name: true,
                     mail: true,
                     password: true,
-                    creationDate: true,
-                    role: true,
                     address: true,
                     phone: true,
+                    creationDate: true,
+                    role: true,
                 }
             });
             return user;
