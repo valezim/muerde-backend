@@ -5,10 +5,12 @@ const {
 } = require('./middlewares/userValidator');
 
 const {
-  generalQueryValidator,
-  generalQueryValidatorIdRequired} = require('../middlewares/commonValidatorMiddlewares');
+  generalQueryValidator 
+} = require('../middlewares/commonValidatorMiddlewares');
 
 const UserController = require('../../controller/UserController');
+
+router.route('/').get(generalQueryValidator, UserController.getUsers);
 
 router.route('/').post(validatePostUser, UserController.postUser);
 
