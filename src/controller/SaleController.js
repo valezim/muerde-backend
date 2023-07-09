@@ -125,6 +125,20 @@ class SaleController {
       });
     }
   }
+
+  static async getTotalSalesAndEarningsPerDay(req, res) {
+    try {
+      const { start, end } = req.query;
+      const salesAndEarningsPerDay = await SaleService.getTotalSalesAndEarningsPerDay(start, end);
+      return res.json({ sales_earnings_per_day: humps.decamelizeKeys(salesAndEarningsPerDay) });
+    } catch (error) {
+      console.log(`Error - SaleController :: getTotalSalesAndEarningsPerDay - ${error}`);
+      return res.status(error.status || 500).json({
+        error: 'Unexpected error while trying to get total sales and earnings per day',
+        stack: error.stack,
+      });
+    }
+  }
 }
 
 

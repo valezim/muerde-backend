@@ -137,6 +137,20 @@ class SaleService {
       throw error;
     }
   };
+
+  async getTotalSalesAndEarningsPerDay(startDate, endDate) {
+    try {
+      if (new Date(endDate) < new Date(startDate)) {
+        endDate = startDate;
+      }
+      return (startDate && endDate) ?
+        await SaleRepo.getTotalSalesAndEarningsPerDaytBetweenDates(startDate, endDate) :
+        await SaleRepo.getTotalSalesAndEarningsPerDay();
+    } catch (error) {
+      console.log(`Error - SaleService :: getTotalSalesAndEarningsPerDay - ${error.stack}`);
+      throw error;
+    }
+  };
 }
 
 module.exports = new SaleService();

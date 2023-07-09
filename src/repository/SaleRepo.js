@@ -301,6 +301,99 @@ class SaleRepo extends BaseRepo {
       throw error;
     }
   }
+
+
+  async getTotalSalesAndEarningsPerDaytBetweenDates(startDate, endDate) {
+    try {
+      const formattedStartDate = new Date(startDate).toISOString();
+      const formattedEndDate = new Date(endDate).toISOString();
+      const sales = await this.db.sale.findMany({
+        where: {
+          finish_date: {
+            not: null,
+          },
+          start_date: {
+            lte: formattedStartDate,
+          },
+          start_date: {
+            lte: formattedEndDate,
+          },
+        },
+        select: {
+          idSale: true,
+          finish_date: true,
+          total_earn_cost: true,
+          total_loss_cost: true,
+        },
+      });
+
+      const salesPerDay = {};
+
+      sales.forEach((sale) => {
+        const date = sale.finish_date.toISOString().split('T')[0];
+
+        if (!salesPerDay[date]) {
+          salesPerDay[date] = {
+            date: date,
+            quantity: 1,
+            earnings: sale.total_earn_cost - sale.total_loss_cost,
+          };
+        } else {
+          salesPerDay[date].quantity += 1;
+          salesPerDay[date].earnings += sale.total_earn_cost - sale.total_loss_cost;
+        }
+      });
+
+      const result = Object.values(salesPerDay);
+
+      return result;
+    } catch (error) {
+      console.log(`Error - IngredientRepo :: getTotalSalesAndEarningsPerDay - ${error.stack}`);
+      throw error;
+    }
+  }
+
+  async getTotalSalesAndEarningsPerDay() {
+    try {
+      const sales = await this.db.sale.findMany({
+        where: {
+          finish_date: {
+            not: null,
+          },
+        },
+        select: {
+          idSale: true,
+          finish_date: true,
+          total_earn_cost: true,
+          total_loss_cost: true,
+        },
+      });
+
+      const salesPerDay = {};
+
+      sales.forEach((sale) => {
+        const date = sale.finish_date.toISOString().split('T')[0];
+
+        if (!salesPerDay[date]) {
+          salesPerDay[date] = {
+            date: date,
+            quantity: 1,
+            earnings: sale.total_earn_cost - sale.total_loss_cost,
+          };
+        } else {
+          salesPerDay[date].quantity += 1;
+          salesPerDay[date].earnings += sale.total_earn_cost - sale.total_loss_cost;
+        }
+      });
+
+      const result = Object.values(salesPerDay);
+
+      return result;
+    } catch (error) {
+      console.log(`Error - IngredientRepo :: getTotalSalesAndEarningsPerDay - ${error.stack}`);
+      throw error;
+    }
+  }
 }
 
 
