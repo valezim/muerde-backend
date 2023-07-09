@@ -4,6 +4,7 @@ const SaleDTO = require('../dto/SaleDTO');
 const SaleProductRepo = require('../repository/SaleProductRepo');
 const DynamicProductStockService = require('./DynamicProductStockService');
 const UserService = require('./UserService');
+const ProductRepo = require('../repository/ProductRepo');
 
 class SaleService {
   async getAllSales() {
@@ -121,6 +122,21 @@ class SaleService {
       throw error;
     }
   }
+
+  async getSalesByProduct(startDate, endDate) {
+    try {
+      if (new Date(endDate) < new Date(startDate)) {
+        endDate = startDate;
+      }
+
+      return (startDate && endDate) ?
+        await ProductRepo.getSalesByProductBetweenDates(startDate, endDate) :
+        await ProductRepo.getSalesByProduct();
+    } catch (error) {
+      console.log(`Error - SaleService :: getTotalSalesByCustomerBetweenDates - ${error.stack}`);
+      throw error;
+    }
+  };
 }
 
 module.exports = new SaleService();

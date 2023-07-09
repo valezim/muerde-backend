@@ -111,6 +111,20 @@ class SaleController {
       });
     }
   }
+
+  static async getSalesByProduct(req, res) {
+    try {
+      const { start, end } = req.query;
+      const salesByProduct = await SaleService.getSalesByProduct(start, end);
+      return res.json({ sales_by_product: humps.decamelizeKeys(salesByProduct) });
+    } catch (error) {
+      console.log(`Error - SaleController :: getSalesByProduct - ${error}`);
+      return res.status(error.status || 500).json({
+        error: 'Unexpected error while trying to get total sales by product',
+        stack: error.stack,
+      });
+    }
+  }
 }
 
 

@@ -28,7 +28,10 @@ router.route('/states').get(SaleController.getAvailableOrderStates);
 // GET IN PROGRESS STATUS COUNT
 router.route('/total_progress_status').get(SaleController.getTotalProgressStatus);
 
-// GET IN PROGRESS STATUS COUNT
+// GET TOTAL SALES BY CUSTOMER
 router.route('/total_customer').get(SaleController.getTotalSalesByCustomerBetweenDates);
+
+// GET SALES BY PRODUCT
+router.route('/total_product').get(SaleController.getSalesByProduct);
 
 module.exports = router;

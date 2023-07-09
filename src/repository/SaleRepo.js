@@ -285,6 +285,13 @@ class SaleRepo extends BaseRepo {
             lte: formattedEndDate,
           },
         },
+        orderBy: [
+          {
+            _count: {
+              idSale: 'desc',
+            },
+          },
+        ],
         _count: { idSale: true },
       });
 
