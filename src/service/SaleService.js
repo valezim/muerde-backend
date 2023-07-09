@@ -16,10 +16,10 @@ class SaleService {
     }
   }
 
-  async getSalesById({idSale}) {
+  async getSalesById({ idSale }) {
     try {
       const idSaleNumber = Number(idSale);
-      const sale = await SaleRepo.getById({idSale: idSaleNumber});
+      const sale = await SaleRepo.getById({ idSale: idSaleNumber });
       return sale;
     } catch (error) {
       console.log(`Error - SaleService :: getSalesById - ${error.stack}`);
@@ -27,10 +27,10 @@ class SaleService {
     }
   }
 
-  async getSalesByUserId({idUser}) {
+  async getSalesByUserId({ idUser }) {
     try {
       const idUserNumber = Number(idUser);
-      const sale = await SaleRepo.getSaleByUserId({idUser: idUserNumber});
+      const sale = await SaleRepo.getSaleByUserId({ idUser: idUserNumber });
       return sale;
     } catch (error) {
       console.log(`Error - SaleService :: getSalesByUserId - ${error.stack}`);
@@ -39,7 +39,7 @@ class SaleService {
   }
 
 
-  async putSale({idSale, state}) {
+  async putSale({ idSale, state }) {
     try {
       const idSaleNumber = Number(idSale);
 
@@ -56,9 +56,9 @@ class SaleService {
   }
 
 
-  async postSale({deliveryType, userId, userDate, products = []}) {
+  async postSale({ deliveryType, userId, userDate, products = [] }) {
     try {
-      const createdSale = await SaleRepo.save({deliveryType, userId, userDate, products});
+      const createdSale = await SaleRepo.save({ deliveryType, userId, userDate, products });
       products.forEach(async (product) => {
         await SaleProductRepo.save({
           saleId: createdSale.idSale,
@@ -70,6 +70,20 @@ class SaleService {
       return createdSale;
     } catch (error) {
       console.log(`Error - SaleService :: postSale - ${error.stack}`);
+      throw error;
+    }
+  }
+
+  async getTotalProgressStatus() {
+    try {
+      const statusCounts = await SaleRepo.getTotalProgressStatusCount();
+
+      return statusCounts.map((statusCount) => ({
+        status: statusCount.status,
+        totalCount: statusCount._count.status,
+      }));
+    } catch (error) {
+      console.log(`Error - SaleService :: getTotalProgressStatus - ${error.stack}`);
       throw error;
     }
   }

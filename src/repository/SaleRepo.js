@@ -57,7 +57,7 @@ class SaleRepo extends BaseRepo {
     }
   }
 
-  async getById({idSale}) {
+  async getById({ idSale }) {
     try {
       const sale = await this.db.Sale.findUnique({
         where: {
@@ -107,7 +107,7 @@ class SaleRepo extends BaseRepo {
     }
   }
 
-  async getSaleByUserId({idUser}) {
+  async getSaleByUserId({ idUser }) {
     try {
       const sale = await this.db.Sale.findMany({
         where: {
@@ -160,7 +160,7 @@ class SaleRepo extends BaseRepo {
   }
 
 
-  async update({idSale, state}) {
+  async update({ idSale, state }) {
     try {
       const updatedSale = await this.db.Sale.update({
         where: {
@@ -252,6 +252,20 @@ class SaleRepo extends BaseRepo {
       return newSale;
     } catch (error) {
       console.log(`Error - SaleRepo :: save - ${error.stack}`);
+      throw error;
+    }
+  }
+
+  async getTotalProgressStatusCount() {
+    try {
+      const statusCount = await this.db.Sale.groupBy({
+        by: ['status'],
+        where: { status: { not: 'TODO' } },
+        _count: { status: true },
+      });
+      return statusCount;
+    } catch (error) {
+      console.log(`Error - IngredientRepo :: getTotalProgressStatusCount - ${error.stack}`);
       throw error;
     }
   }

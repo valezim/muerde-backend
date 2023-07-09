@@ -24,7 +24,7 @@ class IngredientDTO {
       stockPercentageStatus = Math.min(stockPercentageStatus, 100);
     }
 
-    return stockPercentageStatus;
+    return Math.floor(stockPercentageStatus);
   }
 }
 
