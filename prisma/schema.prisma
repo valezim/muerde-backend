@@ -133,6 +133,7 @@ model User {
   mail         String   @unique @db.VarChar(250)
   password     String   @db.VarChar(250)
   address      String   @db.VarChar(250)
+  phone        String   @unique @db.VarChar(250)   
   creationDate DateTime @db.DateTime(0)
   role         Role     @default(USER)
   Review       Review[]
