@@ -25,7 +25,7 @@ class IngredientRepo extends BaseRepo {
 
   async update(ingredient) {
     try {
-      const updatedIngredient =await this.db.Ingredient.update({
+      const updatedIngredient = await this.db.Ingredient.update({
         where: {
           idIngredient: ingredient.idIngredient,
         },
@@ -50,6 +50,7 @@ class IngredientRepo extends BaseRepo {
         include: {
           RecipeIngredient: {
             select: {
+              quantity: true,
               recipe: {
                 select: {
                   idRecipe: true,
@@ -66,7 +67,7 @@ class IngredientRepo extends BaseRepo {
     }
   }
 
-  async getById({idIngredient}) {
+  async getById({ idIngredient }) {
     try {
       const ingredient = await this.db.Ingredient.findUnique({
         where: {
@@ -80,13 +81,13 @@ class IngredientRepo extends BaseRepo {
     }
   }
 
-  async getByIdWithRecipe({idIngredient}) {
+  async getByIdWithRecipe({ idIngredient }) {
     try {
       const ingredient = await this.db.Ingredient.findUnique({
-        where: {idIngredient: idIngredient},
+        where: { idIngredient: idIngredient },
         include: {
           RecipeIngredient: {
-            include: {recipe: true},
+            include: { recipe: true },
           },
         },
       });
@@ -97,7 +98,7 @@ class IngredientRepo extends BaseRepo {
     }
   }
 
-  async delete({idIngredient}) {
+  async delete({ idIngredient }) {
     try {
       await this.db.Ingredient.delete({
         where: {
@@ -111,7 +112,7 @@ class IngredientRepo extends BaseRepo {
   }
 
 
-  async updateStock({idIngredient, quantity}) {
+  async updateStock({ idIngredient, quantity }) {
     try {
       const ingredient = await this.db.Ingredient.findUnique({
         where: {

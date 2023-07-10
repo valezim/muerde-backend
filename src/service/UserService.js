@@ -13,7 +13,7 @@ class UserService {
     }
 
     static async postUser(user) {
-        const saltRounds = 10; 
+        const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(user.password, saltRounds);
         user.password = hashedPassword;
         try {
@@ -41,6 +41,17 @@ class UserService {
             }
         } catch (error) {
             console.log(`Error - UserService :: getUserByMail - ${error.stack}`);
+            throw error;
+        }
+    }
+
+    static async getById(id) {
+        try {
+            const idNumber = Number(id);
+            const user = await UserRepo.getById({ idUser: idNumber });
+            return user;
+        } catch (error) {
+            console.log(`Error - UserService :: getById - ${error.stack}`);
             throw error;
         }
     }

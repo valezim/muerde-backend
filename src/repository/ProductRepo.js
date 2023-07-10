@@ -57,8 +57,8 @@ class ProductRepo extends BaseRepo {
   async updateOOSByRecipeId(recipeId, newOOS) {
     try {
       const updatedProduct = await this.db.Product.update({
-        where: {recipeId: recipeId},
-        data: {isOutOfStock: newOOS},
+        where: { recipeId: recipeId },
+        data: { isOutOfStock: newOOS },
       });
       return updatedProduct;
     } catch (error) {
@@ -77,7 +77,7 @@ class ProductRepo extends BaseRepo {
     }
   }
 
-  async getById({idProduct}) {
+  async getById({ idProduct }) {
     try {
       const product = await this.db.Product.findUnique({
         where: {
@@ -91,10 +91,10 @@ class ProductRepo extends BaseRepo {
     }
   }
 
-  async getByRecipeId({recipeId}) {
+  async getByRecipeId({ recipeId }) {
     try {
       const product = await this.db.Product.findUnique({
-        where: {recipeId: recipeId},
+        where: { recipeId: recipeId },
       });
       return product;
     } catch (error) {
@@ -103,7 +103,7 @@ class ProductRepo extends BaseRepo {
     }
   }
 
-  async getByIdWithIngredientsId({idProduct}) {
+  async getByIdWithIngredientsId({ idProduct }) {
     try {
       const product = await this.db.Product.findUnique({
         where: {
@@ -126,7 +126,7 @@ class ProductRepo extends BaseRepo {
       throw error;
     }
   }
-  async delete({idProduct}) {
+  async delete({ idProduct }) {
     try {
       await this.db.Product.delete({
         where: {
@@ -139,9 +139,9 @@ class ProductRepo extends BaseRepo {
     }
   }
 
-  async updateIngredientStock({product, quantity}) {
+  async updateIngredientStock({ product, quantity }) {
     try {
-      const fullProduct = await this.getByIdWithIngredientsId({idProduct: product});
+      const fullProduct = await this.getByIdWithIngredientsId({ idProduct: product });
       let quantityToSubstract = 0;
 
       for (let i = 0; i < fullProduct.recipe.RecipeIngredient.length; i++) {
@@ -158,7 +158,6 @@ class ProductRepo extends BaseRepo {
   }
 
   async getProductsByRecipeId(recipeId) {
-    console.log('el id que llega al repo ', recipeId);
     try {
       const recipeIdNumber = Number(recipeId);
       const products = await this.db.Product.findMany({
@@ -172,6 +171,95 @@ class ProductRepo extends BaseRepo {
       return products;
     } catch (error) {
       console.log(`Error - ProductRepo :: getProductsByRecipeId - ${error.stack}`);
+      throw error;
+    }
+  }
+
+  async getSalesByProductBetweenDates(startDate, endDate) {
+    try {
+      const formattedStartDate = new Date(startDate).toISOString();
+      const formattedEndDate = new Date(endDate).toISOString();
+
+      const totalSalesByProduct = await this.db.product.findMany({
+        select: {
+          idProduct: true,
+          sales: {
+            select: {
+              quantity: true,
+            },
+            where: {
+              sale: {
+                start_date: {
+                  gte: formattedStartDate,
+                  lte: formattedEndDate,
+                },
+              },
+            },
+          },
+        },
+        orderBy: {
+          sales: {
+            _count: 'desc',
+          },
+        },
+        take: 10,
+      });
+
+      const formattedTotalSalesByProduct = await Promise.all(
+        totalSalesByProduct.map(async (product) => {
+          const productFullDetail = await this.getById({ idProduct: product.idProduct });
+          return {
+            id_product: product.idProduct,
+            sales_count: product.sales.reduce((total, sale) => total + sale.quantity, 0),
+            ...productFullDetail,
+          };
+        }),
+      );
+
+      return formattedTotalSalesByProduct.sort(
+        (a, b) => b.sales_count - a.sales_count,
+      ).slice(0, 10);
+    } catch (error) {
+      console.log(`Error - ProductRepo :: getSalesByProductBetweenDates - ${error.stack}`);
+      throw error;
+    }
+  }
+
+
+  async getSalesByProduct() {
+    try {
+      const totalSalesByProduct = await this.db.product.findMany({
+        select: {
+          idProduct: true,
+          sales: {
+            select: {
+              quantity: true,
+            },
+          },
+        },
+        orderBy: {
+          sales: {
+            _count: 'desc',
+          },
+        },
+        take: 10,
+      });
+
+      const formattedTotalSalesByProduct = await Promise.all(
+        totalSalesByProduct.map(async (product) => {
+          const productFullDetail = await this.getById({ idProduct: product.idProduct });
+          return {
+            sales_count: product.sales.reduce((total, sale) => total + sale.quantity, 0),
+            ...productFullDetail,
+          };
+        }),
+      );
+
+      return formattedTotalSalesByProduct.sort(
+        (a, b) => b.sales_count - a.sales_count,
+      ).slice(0, 10);
+    } catch (error) {
+      console.log(`Error - ProductRepo :: getSalesByProduct - ${error.stack}`);
       throw error;
     }
   }

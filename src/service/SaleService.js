@@ -3,6 +3,8 @@ const SaleRepo = require('../repository/SaleRepo');
 const SaleDTO = require('../dto/SaleDTO');
 const SaleProductRepo = require('../repository/SaleProductRepo');
 const DynamicProductStockService = require('./DynamicProductStockService');
+const UserService = require('./UserService');
+const ProductRepo = require('../repository/ProductRepo');
 
 class SaleService {
   async getAllSales() {
@@ -16,10 +18,10 @@ class SaleService {
     }
   }
 
-  async getSalesById({idSale}) {
+  async getSalesById({ idSale }) {
     try {
       const idSaleNumber = Number(idSale);
-      const sale = await SaleRepo.getById({idSale: idSaleNumber});
+      const sale = await SaleRepo.getById({ idSale: idSaleNumber });
       return sale;
     } catch (error) {
       console.log(`Error - SaleService :: getSalesById - ${error.stack}`);
@@ -27,10 +29,10 @@ class SaleService {
     }
   }
 
-  async getSalesByUserId({idUser}) {
+  async getSalesByUserId({ idUser }) {
     try {
       const idUserNumber = Number(idUser);
-      const sale = await SaleRepo.getSaleByUserId({idUser: idUserNumber});
+      const sale = await SaleRepo.getSaleByUserId({ idUser: idUserNumber });
       return sale;
     } catch (error) {
       console.log(`Error - SaleService :: getSalesByUserId - ${error.stack}`);
@@ -39,7 +41,7 @@ class SaleService {
   }
 
 
-  async putSale({idSale, state}) {
+  async putSale({ idSale, state }) {
     try {
       const idSaleNumber = Number(idSale);
 
@@ -56,9 +58,9 @@ class SaleService {
   }
 
 
-  async postSale({deliveryType, userId, userDate, products = []}) {
+  async postSale({ deliveryType, userId, userDate, products = [] }) {
     try {
-      const createdSale = await SaleRepo.save({deliveryType, userId, userDate, products});
+      const createdSale = await SaleRepo.save({ deliveryType, userId, userDate, products });
       products.forEach(async (product) => {
         await SaleProductRepo.save({
           saleId: createdSale.idSale,
@@ -73,6 +75,82 @@ class SaleService {
       throw error;
     }
   }
+
+  async getTotalProgressStatus() {
+    try {
+      const statusCounts = await SaleRepo.getTotalProgressStatusCount();
+
+      return statusCounts.map((statusCount) => ({
+        status: statusCount.status,
+        totalCount: statusCount._count.status,
+      }));
+    } catch (error) {
+      console.log(`Error - SaleService :: getTotalProgressStatus - ${error.stack}`);
+      throw error;
+    }
+  }
+
+  async getTotalSalesByCustomerBetweenDates(startDate, endDate) {
+    try {
+      if (!startDate) {
+        const currentDate = new Date();
+        startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+      }
+
+      if (!endDate) {
+        endDate = new Date();
+      }
+
+      if (new Date(endDate) < new Date(startDate)) {
+        endDate = startDate;
+      }
+
+      const salesByCustomer = await SaleRepo.getTotalSalesByCustomerBetweenDates(startDate, endDate);
+
+      const salesWithUser = await Promise.all(salesByCustomer.map(async (sale) => {
+        const user = await UserService.getById(sale?.userId);
+        return {
+          id_user: sale?.userId,
+          name: user?.name,
+          sales: sale?._count?.idSale,
+        };
+      }));
+
+      return salesWithUser;
+    } catch (error) {
+      console.log(`Error - SaleService :: getTotalSalesByCustomerBetweenDates - ${error.stack}`);
+      throw error;
+    }
+  }
+
+  async getSalesByProduct(startDate, endDate) {
+    try {
+      if (new Date(endDate) < new Date(startDate)) {
+        endDate = startDate;
+      }
+
+      return (startDate && endDate) ?
+        await ProductRepo.getSalesByProductBetweenDates(startDate, endDate) :
+        await ProductRepo.getSalesByProduct();
+    } catch (error) {
+      console.log(`Error - SaleService :: getTotalSalesByCustomerBetweenDates - ${error.stack}`);
+      throw error;
+    }
+  };
+
+  async getTotalSalesAndEarningsPerDay(startDate, endDate) {
+    try {
+      if (new Date(endDate) < new Date(startDate)) {
+        endDate = startDate;
+      }
+      return (startDate && endDate) ?
+        await SaleRepo.getTotalSalesAndEarningsPerDaytBetweenDates(startDate, endDate) :
+        await SaleRepo.getTotalSalesAndEarningsPerDay();
+    } catch (error) {
+      console.log(`Error - SaleService :: getTotalSalesAndEarningsPerDay - ${error.stack}`);
+      throw error;
+    }
+  };
 }
 
 module.exports = new SaleService();
