@@ -5,6 +5,26 @@ class UserRepo extends BaseRepo {
         super();
     }
 
+    async getUsers() {
+        try {
+            const users = await this.db.user.findMany({
+                select: {
+                    idUser: true,
+                    name: true,
+                    mail: true,
+                    address: true,
+                    phone: true,
+                    creationDate: true,
+                    role: true,
+                },
+            });
+            return users;
+        } catch (error) {
+            console.log(`Error - UserRepo :: getUsers - ${error.stack}`);
+            throw error;
+        }
+    }
+
     async save(user) {
         try {
             const newUser = await this.db.user.create({
@@ -12,17 +32,19 @@ class UserRepo extends BaseRepo {
                     name: user.name,
                     mail: user.mail,
                     password: user.password,
+                    address: user.address,
+                    phone: user.phone,
                     creationDate: new Date(),
                     role: 'USER',
-                    address: user.address,
                 },
                 select: {
                     idUser: true,
                     name: true,
                     mail: true,
+                    address: true,
+                    phone: true,
                     creationDate: true,
                     role: true,
-                    address: true,
                 },
             });
             return newUser;
@@ -43,9 +65,10 @@ class UserRepo extends BaseRepo {
                     name: true,
                     mail: true,
                     password: true,
+                    address: true,
+                    phone: true,
                     creationDate: true,
                     role: true,
-                    address: true,
                 },
             });
             return user;
