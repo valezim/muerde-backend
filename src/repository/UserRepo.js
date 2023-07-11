@@ -77,6 +77,34 @@ class UserRepo extends BaseRepo {
             throw error;
         }
     }
+
+    async update(id, user) {
+        try {
+            const updatedUser = await this.db.user.update({
+                where: {
+                    idUser: parseInt(id),
+                },
+                data: {
+                    mail: user.mail,
+                    address: user.address,
+                    phone: user.phone,
+                },
+                select: {
+                    idUser: true,
+                    name: true,
+                    mail: true,
+                    address: true,
+                    phone: true,
+                    creationDate: true,
+                    role: true,
+                }
+            });
+            return updatedUser;
+        } catch (error) {
+            console.log(`Error - UserRepo :: update - ${error.stack}`);
+            throw error;
+        }
+    }
 }
 
 module.exports = new UserRepo();

@@ -44,6 +44,16 @@ class UserService {
             throw error;
         }
     }
+
+    static async putUser(id, user) {
+        try {
+            const updatedUser = await UserRepo.update(id, user);
+            return updatedUser;
+        } catch (error) {
+            console.log(`Error - UserService :: putUser - ${error.stack}`);
+            throw error;
+        }
+    }
 }
 
 module.exports = UserService;

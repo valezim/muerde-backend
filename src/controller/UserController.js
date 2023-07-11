@@ -44,6 +44,20 @@ class UserController {
             });
         }
     }
+
+    static async putUser(req, res) {
+        try {
+            const id = req.query.id;
+            const user = humps.camelizeKeys(req.body.user);
+            const updatedUser = await UserService.putUser(id, user);
+            return res.json(humps.decamelizeKeys(updatedUser));
+        } catch (error) {
+            console.log(`Error - UserController :: putUser - ${error}`);
+            return res.status(error.status || 500).json({
+                error: 'Unexpected error while trying to update user',
+            });
+        }
+    }
 }
 
 module.exports = UserController;

@@ -17,7 +17,6 @@ class ProductController {
     }
 
     static async putProduct(req, res) {
-        console.log("put en el controller: ", req.body.product);
         try {
             const idProduct = req.query.id;
             const Product = humps.camelizeKeys(req.body.product);
