@@ -1,11 +1,19 @@
 const humps = require('humps');
 const ProductService = require('../service/ProductService');
 
+// For AWS img upload
+const multer = require('multer'); // a instalar
+const upload = multer({ dest: 'uploads/' }); // almacenar temporalmente los archivos en la carpeta 'uploads'
+const { uploadImageToS3 } = require('../service/ImageUploadService');
+
 class ProductController {
     static async postProduct(req, res) {
-        console.log("post product controller: ", req.body.product);
         try {
             const newProduct = humps.camelizeKeys(req.body.product);
+            if (req.file) {
+                const imageUrl = await uploadImageToS3(req.file);
+                newProduct.image = imageUrl; // añadir la url de la imagen al objeto newProduct
+            }
             const createdProduct = await ProductService.postProduct(newProduct);
             return res.json({ ...humps.decamelizeKeys(createdProduct) });
         } catch (error) {

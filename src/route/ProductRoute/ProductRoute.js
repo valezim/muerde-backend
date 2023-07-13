@@ -1,5 +1,7 @@
 const express = require('express');
-// eslint-disable-next-line new-cap
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+
 const router = express.Router();
 const {
   validatePostProduct,
@@ -13,6 +15,7 @@ const {
 const ProductController = require('../../controller/ProductController');
 
 router.route('/').post(validatePostProduct, ProductController.postProduct);
+//router.route('/').post(upload.single('image'), validatePostProduct, ProductController.postProduct); // nueva ruta post con imagen
 
 router.route('/').put(generalQueryValidatorIdRequired, validatePutProduct, ProductController.putProduct);
 
