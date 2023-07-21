@@ -260,7 +260,7 @@ class SaleRepo extends BaseRepo {
     try {
       const statusCount = await this.db.Sale.groupBy({
         by: ['status'],
-        where: { status: { not: 'TODO' } },
+        where: { status: { not: 'FINISHED' } },
         _count: { status: true },
       });
       return statusCount;
