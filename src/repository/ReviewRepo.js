@@ -43,7 +43,8 @@ class ReviewRepo extends BaseRepo {
             const formattedStartDate = new Date(startDate).toISOString();
             const formattedEndDate = new Date(endDate).toISOString();
 
-            const scoreQuantity = await this.db.review.findMany({
+            const scoreQuantity = await this.db.review.groupBy({
+                by: ['score'],
                 where: {
                     sale: {
                         finish_date: {
@@ -52,15 +53,7 @@ class ReviewRepo extends BaseRepo {
                         },
                     },
                 },
-                groupBy: {
-                    score: true,
-                },
-                select: {
-                    score: true,
-                    totalCount: {
-                        count: true,
-                    },
-                },
+                _count: { idReview: true },
                 orderBy: {
                     score: 'desc',
                 },
