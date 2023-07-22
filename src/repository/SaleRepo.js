@@ -223,6 +223,7 @@ class SaleRepo extends BaseRepo {
   }
 
   async save(sale) {
+    console.log('saleee ', sale);
     try {
       let cost = 0;
       let price = 0;
@@ -245,7 +246,7 @@ class SaleRepo extends BaseRepo {
           status: 'TODO',
           total_earn_cost: price,
           total_loss_cost: cost,
-          userId: sale.userId,
+          userId: Number(sale.userId),
         },
       });
 
