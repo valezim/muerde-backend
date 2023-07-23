@@ -16,7 +16,7 @@ class UserRepo extends BaseRepo {
                     phone: true,
                     creationDate: true,
                     role: true,
-                }
+                },
             });
             return users;
         } catch (error) {
@@ -35,7 +35,7 @@ class UserRepo extends BaseRepo {
                     address: user.address,
                     phone: user.phone,
                     creationDate: new Date(),
-                    role: "USER",
+                    role: 'USER',
                 },
                 select: {
                     idUser: true,
@@ -45,7 +45,7 @@ class UserRepo extends BaseRepo {
                     phone: true,
                     creationDate: true,
                     role: true,
-                }
+                },
             });
             return newUser;
         } catch (error) {
@@ -69,11 +69,25 @@ class UserRepo extends BaseRepo {
                     phone: true,
                     creationDate: true,
                     role: true,
-                }
+                },
             });
             return user;
         } catch (error) {
             console.log(`Error - UserRepo :: getUserByMail - ${error.stack}`);
+            throw error;
+        }
+    }
+
+    async getById(id) {
+        try {
+            const user = await this.db.User.findUnique({
+                where: {
+                    idUser: id,
+                },
+            });
+            return user;
+        } catch (error) {
+            console.log(`Error - UserRepo :: getById - ${error.stack}`);
             throw error;
         }
     }
@@ -97,7 +111,7 @@ class UserRepo extends BaseRepo {
                     phone: true,
                     creationDate: true,
                     role: true,
-                }
+                },
             });
             return updatedUser;
         } catch (error) {

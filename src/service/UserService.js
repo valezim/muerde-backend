@@ -12,8 +12,19 @@ class UserService {
         }
     }
 
+    static async getById(id) {
+        try {
+            const idNumber = Number(id);
+            const user = await UserRepo.getById(idNumber);
+            return user;
+        } catch (error) {
+            console.log(`Error - UserService :: getById - ${error.stack}`);
+            throw error;
+        }
+    }
+
     static async postUser(user) {
-        const saltRounds = 10; 
+        const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(user.password, saltRounds);
         user.password = hashedPassword;
         try {
