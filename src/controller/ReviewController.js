@@ -41,6 +41,20 @@ class ReviewController {
             });
         }
     }
+
+    static async getProductInfoWithReviewSummary(req, res) {
+        try {
+            const { product } = req.query;
+            const getProductInfoWithReviewSummary = await ReviewService.getProductInfoWithReviewSummary(product);
+            return res.json(humps.decamelizeKeys(getProductInfoWithReviewSummary));
+        } catch (error) {
+            console.log(`Error - ReviewController :: getProductInfoWithReviewSummary - ${error}`);
+            return res.status(error.status || 500).json({
+                error: 'Unexpected error while trying to get product info with review summary',
+                stack: error.stack,
+            });
+        }
+    }
 }
 
 module.exports = ReviewController;

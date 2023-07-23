@@ -83,6 +83,25 @@ class ReviewRepo extends BaseRepo {
             throw error;
         }
     }
+
+    async getReviewSummaryFromProduct(productId = '') {
+        try {
+            const reviewSummaryFromProduct = await this.db.review.groupBy({
+                by: ['score', 'description'],
+                where: {
+                    sale: {
+                        products: { some: { productId: Number(productId) } },
+                    },
+                },
+                _count: { idReview: true },
+                select: { score: true, description: true },
+            });
+            return reviewSummaryFromProduct;
+        } catch (error) {
+            console.log(`Error - ReviewRepo :: getReviewSummaryFromProduct - ${error.stack}`);
+            throw error;
+        }
+    }
 }
 
 module.exports = new ReviewRepo();

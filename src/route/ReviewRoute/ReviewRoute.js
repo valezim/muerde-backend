@@ -14,6 +14,8 @@ router.route('/').get(generalQueryValidator, ReviewController.getReviews);
 
 router.route('/score').get(ReviewController.getScoreQuantity);
 
+router.route('/product_review_summary').get(ReviewController.getProductInfoWithReviewSummary);
+
 router.route('/').post(validatePostReview, ReviewController.saveReview);
 
 module.exports = router;
