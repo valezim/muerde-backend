@@ -57,7 +57,7 @@ class SaleRepo extends BaseRepo {
     }
   }
 
-  async getById({ idSale }) {
+  async getById({idSale}) {
     try {
       const sale = await this.db.Sale.findUnique({
         where: {
@@ -107,7 +107,7 @@ class SaleRepo extends BaseRepo {
     }
   }
 
-  async getSaleByUserId({ idUser }) {
+  async getSaleByUserId({idUser}) {
     try {
       const sale = await this.db.Sale.findMany({
         where: {
@@ -160,7 +160,7 @@ class SaleRepo extends BaseRepo {
   }
 
 
-  async update({ idSale, state }) {
+  async update({idSale, state}) {
     try {
       const updatedSale = await this.db.Sale.update({
         where: {
@@ -223,6 +223,7 @@ class SaleRepo extends BaseRepo {
   }
 
   async save(sale) {
+    console.log('saleee ', sale);
     try {
       let cost = 0;
       let price = 0;
@@ -245,7 +246,7 @@ class SaleRepo extends BaseRepo {
           status: 'TODO',
           total_earn_cost: price,
           total_loss_cost: cost,
-          userId: sale.userId,
+          userId: Number(sale.userId),
         },
       });
 
@@ -260,8 +261,8 @@ class SaleRepo extends BaseRepo {
     try {
       const statusCount = await this.db.Sale.groupBy({
         by: ['status'],
-        where: { status: { not: 'FINISHED' } },
-        _count: { status: true },
+        where: {status: {not: 'FINISHED'}},
+        _count: {status: true},
       });
       return statusCount;
     } catch (error) {
@@ -292,7 +293,7 @@ class SaleRepo extends BaseRepo {
             },
           },
         ],
-        _count: { idSale: true },
+        _count: {idSale: true},
       });
 
       return totalSalesByCustomer;
@@ -318,6 +319,9 @@ class SaleRepo extends BaseRepo {
           start_date: {
             lte: formattedEndDate,
           },
+        },
+        orderBy: {
+          finish_date: 'asc',
         },
         select: {
           idSale: true,
@@ -360,6 +364,9 @@ class SaleRepo extends BaseRepo {
           finish_date: {
             not: null,
           },
+        },
+        orderBy: {
+          finish_date: 'asc',
         },
         select: {
           idSale: true,

@@ -2,14 +2,14 @@ const ProductRepo = require('../repository/ProductRepo');
 const DynamicProductStockService = require('./DynamicProductStockService');
 
 class ProductService {
-  async postProduct({title, description, image, price, tags, status, recipeId, catalogId}) {
+  async postProduct({ title, description, image, price, tags, status, recipeId, catalogId }) {
     try {
       const priceNumber = Number(price);
       const recipeIdNumber = Number(recipeId);
       const catalogIdNumber = Number(catalogId);
       const isOutOfStock = await DynamicProductStockService.isRecipeAvailableFromIngredientsStock(recipeIdNumber) ?
-       false :
-       true;
+        false :
+        true;
       const createdProduct = await ProductRepo.save({
         title,
         description,
@@ -28,12 +28,12 @@ class ProductService {
     }
   }
 
-  async putProduct({idProduct, title, price, image, description, tags, catalog_id, status}) {
+  async putProduct({ idProduct, title, price, image, description, tags, catalog_id, status }) {
     try {
       const idProductNumber = Number(idProduct);
       const priceNumber = Number(price);
       const catalogIdNumber = Number(catalog_id);
-      const updatedProduct = await ProductRepo.update({idProduct: idProductNumber, title, price: priceNumber, image, description, tags, catalogIdNumber, status});
+      const updatedProduct = await ProductRepo.update({ idProduct: idProductNumber, title, price: priceNumber, image, description, tags, catalogIdNumber, status });
       console.log('put product servicio: ', updatedProduct);
 
       return updatedProduct;
@@ -53,10 +53,10 @@ class ProductService {
     }
   }
 
-  async getProductById({idProduct}) {
+  async getProductById({ idProduct }) {
     try {
       const idProductNumber = Number(idProduct);
-      const Product = await ProductRepo.getById({idProduct: idProductNumber});
+      const Product = await ProductRepo.getById({ idProduct: idProductNumber });
       return Product;
     } catch (error) {
       console.log(`Error - ProductService :: getProductById - ${error.stack}`);
@@ -64,10 +64,10 @@ class ProductService {
     }
   }
 
-  async deleteProduct({idProduct}) {
+  async deleteProduct({ idProduct }) {
     try {
       const idProductNumber = Number(idProduct);
-      await ProductRepo.delete({idProduct: idProductNumber});
+      await ProductRepo.delete({ idProduct: idProductNumber });
     } catch (error) {
       console.log(`Error - ProductService :: deleteProduct - ${error.stack}`);
       throw error;

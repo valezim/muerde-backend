@@ -12,6 +12,7 @@ class IngredientDTO {
   }
 
   getStockPercentageStatus(ingredientData) {
+    if (ingredientData.totalQuantity === 0) return 0;
     const requiredQuantity = ingredientData.RecipeIngredient.reduce((sum, recipeIngredient) => {
       return sum + recipeIngredient.quantity * 5;
     }, 0);
