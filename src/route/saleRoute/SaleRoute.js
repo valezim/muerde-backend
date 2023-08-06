@@ -37,4 +37,7 @@ router.route('/total_product').get(SaleController.getSalesByProduct);
 // GET SALES COUNT AND EARNINGS PER DAY
 router.route('/sales_earnings_per_day').get(SaleController.getTotalSalesAndEarningsPerDay);
 
+// GET ORDER PREPARATION SUGGESTIONS
+router.route('/order_preparation_suggestions').get(SaleController.getOrderPreparationSuggestions);
+
 module.exports = router;
