@@ -57,7 +57,7 @@ class SaleRepo extends BaseRepo {
     }
   }
 
-  async getById({idSale}) {
+  async getById({ idSale }) {
     try {
       const sale = await this.db.Sale.findUnique({
         where: {
@@ -107,7 +107,7 @@ class SaleRepo extends BaseRepo {
     }
   }
 
-  async getSaleByUserId({idUser}) {
+  async getSaleByUserId({ idUser }) {
     try {
       const sale = await this.db.Sale.findMany({
         where: {
@@ -160,7 +160,7 @@ class SaleRepo extends BaseRepo {
   }
 
 
-  async update({idSale, state}) {
+  async update({ idSale, state }) {
     try {
       const updatedSale = await this.db.Sale.update({
         where: {
@@ -261,8 +261,8 @@ class SaleRepo extends BaseRepo {
     try {
       const statusCount = await this.db.Sale.groupBy({
         by: ['status'],
-        where: {status: {not: 'FINISHED'}},
-        _count: {status: true},
+        where: { status: { not: 'FINISHED' } },
+        _count: { status: true },
       });
       return statusCount;
     } catch (error) {
@@ -293,7 +293,7 @@ class SaleRepo extends BaseRepo {
             },
           },
         ],
-        _count: {idSale: true},
+        _count: { idSale: true },
       });
 
       return totalSalesByCustomer;
@@ -406,15 +406,11 @@ class SaleRepo extends BaseRepo {
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);
 
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
-
     try {
       const sales = await this.db.sale.findMany({
         where: {
-          start_date: {
+          user_date: {
             gte: today,
-            lt: tomorrow,
           },
         },
         include: {
@@ -425,7 +421,7 @@ class SaleRepo extends BaseRepo {
                   recipe: {
                     include: {
                       RecipeIngredient: {
-                        include: {ingredient: true},
+                        include: { ingredient: true },
                       },
                     },
                   },

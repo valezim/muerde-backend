@@ -152,13 +152,13 @@ class SaleService {
     }
   };
 
-  groupProductsByStartDate(sales = []) {
+  groupProductsByUserDate(sales = []) {
     const productGroups = [];
 
     sales.forEach((order) => {
-      const startDate = new Date(order.start_date).toISOString().slice(0, 10);
+      const userDate = new Date(order.user_date).toISOString().slice(0, 10);
 
-      const existingGroup = productGroups.find((group) => group.day === startDate);
+      const existingGroup = productGroups.find((group) => group.day === userDate);
 
       if (existingGroup) {
         order.products.forEach((product) => {
@@ -184,7 +184,7 @@ class SaleService {
         });
       } else {
         const newGroup = {
-          day: startDate,
+          day: userDate,
           products: order.products.map((product) => ({
             id_product: product.product.idProduct,
             quantity: product.quantity,
@@ -287,11 +287,21 @@ class SaleService {
     return result;
   }
 
+  sortByDay(data) {
+    data.sort((a, b) => {
+      const dateA = new Date(a.day);
+      const dateB = new Date(b.day);
+      return dateA - dateB;
+    });
+    return data;
+  }
+
   async getOrderPreparationSuggestions() {
     try {
       const salesWithIncludes = await SaleRepo.getSalesWithProductIngredients();
-      const productGroupByStartDate = this.groupProductsByStartDate(salesWithIncludes);
-      return this.prepareOrderSuggestions(productGroupByStartDate);
+      const productGroupByUserDate = this.groupProductsByUserDate(salesWithIncludes);
+      const orderSuggestionsList = this.prepareOrderSuggestions(productGroupByUserDate);
+      return this.sortByDay(orderSuggestionsList);
     } catch (error) {
       console.log(`Error - SaleService :: getOrderPreparationSuggestions - ${error.stack}`);
       throw error;
