@@ -52,7 +52,7 @@ class SaleRepo extends BaseRepo {
       });
       return sales;
     } catch (error) {
-      console.log(`Error - IngredientRepo :: getAll - ${error.stack}`);
+      console.log(`Error - SaleRepo :: getAll - ${error.stack}`);
       throw error;
     }
   }
@@ -266,7 +266,7 @@ class SaleRepo extends BaseRepo {
       });
       return statusCount;
     } catch (error) {
-      console.log(`Error - IngredientRepo :: getTotalProgressStatusCount - ${error.stack}`);
+      console.log(`Error - SaleRepo :: getTotalProgressStatusCount - ${error.stack}`);
       throw error;
     }
   }
@@ -298,7 +298,7 @@ class SaleRepo extends BaseRepo {
 
       return totalSalesByCustomer;
     } catch (error) {
-      console.log(`Error - IngredientRepo :: getTotalSalesByCustomerBetweenDates - ${error.stack}`);
+      console.log(`Error - SaleRepo :: getTotalSalesByCustomerBetweenDates - ${error.stack}`);
       throw error;
     }
   }
@@ -352,7 +352,7 @@ class SaleRepo extends BaseRepo {
 
       return result;
     } catch (error) {
-      console.log(`Error - IngredientRepo :: getTotalSalesAndEarningsPerDay - ${error.stack}`);
+      console.log(`Error - SaleRepo :: getTotalSalesAndEarningsPerDay - ${error.stack}`);
       throw error;
     }
   }
@@ -397,7 +397,48 @@ class SaleRepo extends BaseRepo {
 
       return result;
     } catch (error) {
-      console.log(`Error - IngredientRepo :: getTotalSalesAndEarningsPerDay - ${error.stack}`);
+      console.log(`Error - SaleRepo :: getTotalSalesAndEarningsPerDay - ${error.stack}`);
+      throw error;
+    }
+  }
+
+  async getSalesWithProductIngredients() {
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    try {
+      const sales = await this.db.sale.findMany({
+        where: {
+          start_date: {
+            gte: today,
+            lt: tomorrow,
+          },
+        },
+        include: {
+          products: {
+            include: {
+              product: {
+                include: {
+                  recipe: {
+                    include: {
+                      RecipeIngredient: {
+                        include: {ingredient: true},
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      return sales;
+    } catch (error) {
+      console.log(`Error - SaleRepo :: getSalesWithProductIngredients - ${error.stack}`);
       throw error;
     }
   }
