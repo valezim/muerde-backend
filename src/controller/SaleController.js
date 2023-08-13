@@ -1,12 +1,14 @@
 const humps = require('humps');
 const SaleService = require('../service/SaleService');
 const { SALE_STATES } = require('../config/default');
-
+const MailService = require('../service/MailService'); // borrar
 
 class SaleController {
   static async getSales(req, res) {
     try {
       const idSale = req.query.id;
+
+      MailService.sendPurchaseConfirmation("fatinobleg@gmail.com") // borrar
 
       if (idSale) {
         const sale = await SaleService.getSalesById({ idSale });
