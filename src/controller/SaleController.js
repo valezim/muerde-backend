@@ -141,6 +141,19 @@ class SaleController {
       });
     }
   }
+
+  static async getOrderPreparationSuggestions(req, res) {
+    try {
+      const orderPreparationSuggestions = await SaleService.getOrderPreparationSuggestions();
+      return res.json({ order_preparation_suggestion_per_day: humps.decamelizeKeys(orderPreparationSuggestions) });
+    } catch (error) {
+      console.log(`Error - SaleController :: getOrderPreparationSuggestions - ${error}`);
+      return res.status(error.status || 500).json({
+        error: 'Unexpected error while trying to get order preparation suggestions per day',
+        stack: error.stack,
+      });
+    }
+  }
 }
 
 

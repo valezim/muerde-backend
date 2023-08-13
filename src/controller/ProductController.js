@@ -3,24 +3,26 @@ const ProductService = require('../service/ProductService');
 
 class ProductController {
     static async postProduct(req, res) {
-        console.log("post product controller: ", req.body.product);
         try {
-            const newProduct = humps.camelizeKeys(req.body.product);
-            const createdProduct = await ProductService.postProduct(newProduct);
+            const imageFile = req.files?.image;
+            const newProduct = humps.camelizeKeys(req.body);
+            const createdProduct = await ProductService.postProduct({ ...newProduct, imageFile });
             return res.json({ ...humps.decamelizeKeys(createdProduct) });
         } catch (error) {
             console.log(`Error - ProductController :: postProduct - ${error}`);
             return res.status(error.status || 500).json({
                 error: 'Unexpected error while trying to create product',
+                stack: error.stack,
             });
         }
     }
 
     static async putProduct(req, res) {
         try {
+            const imageFile = req.files?.image;
             const idProduct = req.query.id;
             const Product = humps.camelizeKeys(req.body.product);
-            const updatedProduct = await ProductService.putProduct({ ...Product, idProduct });
+            const updatedProduct = await ProductService.putProduct({ ...Product, idProduct, imageFile });
             return res.json({ ...humps.decamelizeKeys(updatedProduct) });
         } catch (error) {
             console.log(`Error - ProductController :: putProduct - ${error}`);

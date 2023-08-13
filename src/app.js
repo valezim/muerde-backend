@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 require('dotenv').config();
@@ -18,9 +19,16 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan('dev'));
+
+app.use(fileUpload({
+  limits: {
+    fileSize: 1000000, // 1mb
+  },
+  abortOnLimit: true,
+}));
 
 app.use('/health', healthRoute);
 app.use('/ingredient', ingredientRoute);

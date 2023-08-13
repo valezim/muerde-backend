@@ -1,8 +1,19 @@
 const ProductRepo = require('../repository/ProductRepo');
 const DynamicProductStockService = require('./DynamicProductStockService');
+const BucketService = require('../service/BucketService');
 
 class ProductService {
-  async postProduct({ title, description, image, price, tags, status, recipeId, catalogId }) {
+  async postProduct({ title, description, imageFile, price, tags, status, recipeId, catalogId }) {
+    let imageLocation = '';
+    try {
+      if (imageFile) {
+        const { location } = await BucketService.uploadFile(imageFile);
+        imageLocation = location;
+      }
+    } catch (error) {
+      console.log(`Error - ProductService :: postProduct - Error while saving image - ${error.stack}`);
+    }
+
     try {
       const priceNumber = Number(price);
       const recipeIdNumber = Number(recipeId);
@@ -10,10 +21,11 @@ class ProductService {
       const isOutOfStock = await DynamicProductStockService.isRecipeAvailableFromIngredientsStock(recipeIdNumber) ?
         false :
         true;
+
       const createdProduct = await ProductRepo.save({
         title,
         description,
-        image,
+        image: imageLocation,
         priceNumber,
         tags,
         status: status || 'ENABLED',
@@ -28,13 +40,31 @@ class ProductService {
     }
   }
 
-  async putProduct({ idProduct, title, price, image, description, tags, catalog_id, status }) {
+  async putProduct({ idProduct, title, price, imageFile, description, tags, catalog_id, status }) {
+    let imageLocation = '';
+    try {
+      if (imageFile) {
+        const { location } = await BucketService.uploadFile(imageFile);
+        imageLocation = location;
+      }
+    } catch (error) {
+      console.log(`Error - ProductService :: postProduct - Error while saving image - ${error.stack}`);
+    }
+
     try {
       const idProductNumber = Number(idProduct);
       const priceNumber = Number(price);
       const catalogIdNumber = Number(catalog_id);
-      const updatedProduct = await ProductRepo.update({ idProduct: idProductNumber, title, price: priceNumber, image, description, tags, catalogIdNumber, status });
-      console.log('put product servicio: ', updatedProduct);
+      const updatedProduct = await ProductRepo.update({
+        idProduct: idProductNumber,
+        title,
+        price: priceNumber,
+        image: imageLocation,
+        description,
+        tags,
+        catalogIdNumber,
+        status,
+      });
 
       return updatedProduct;
     } catch (error) {
