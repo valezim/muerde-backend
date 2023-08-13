@@ -19,9 +19,10 @@ class ProductController {
 
     static async putProduct(req, res) {
         try {
+            const imageFile = req.files?.image;
             const idProduct = req.query.id;
             const Product = humps.camelizeKeys(req.body.product);
-            const updatedProduct = await ProductService.putProduct({ ...Product, idProduct });
+            const updatedProduct = await ProductService.putProduct({ ...Product, idProduct, imageFile });
             return res.json({ ...humps.decamelizeKeys(updatedProduct) });
         } catch (error) {
             console.log(`Error - ProductController :: putProduct - ${error}`);

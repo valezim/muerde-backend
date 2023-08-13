@@ -21,4 +21,4 @@ const putProductSchema = Joi.object({
   status: Joi.string(),
 });
 
-module.exports = {postProductSchema, putProductSchema};
+module.exports = { postProductSchema, putProductSchema };
