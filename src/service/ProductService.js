@@ -40,13 +40,31 @@ class ProductService {
     }
   }
 
-  async putProduct({ idProduct, title, price, image, description, tags, catalog_id, status }) {
+  async putProduct({ idProduct, title, price, imageFile, description, tags, catalog_id, status }) {
+    let imageLocation = '';
+    try {
+      if (imageFile) {
+        const { location } = await BucketService.uploadFile(imageFile);
+        imageLocation = location;
+      }
+    } catch (error) {
+      console.log(`Error - ProductService :: postProduct - Error while saving image - ${error.stack}`);
+    }
+
     try {
       const idProductNumber = Number(idProduct);
       const priceNumber = Number(price);
       const catalogIdNumber = Number(catalog_id);
-      const updatedProduct = await ProductRepo.update({ idProduct: idProductNumber, title, price: priceNumber, image, description, tags, catalogIdNumber, status });
-      console.log('put product servicio: ', updatedProduct);
+      const updatedProduct = await ProductRepo.update({
+        idProduct: idProductNumber,
+        title,
+        price: priceNumber,
+        image: imageLocation,
+        description,
+        tags,
+        catalogIdNumber,
+        status,
+      });
 
       return updatedProduct;
     } catch (error) {
