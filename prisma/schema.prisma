@@ -11,6 +11,9 @@ model Service {
   idService   Int      @id @unique(map: "idService_UNIQUE") @default(autoincrement())
   description String?  @db.VarChar(250)
   image       String?  @db.VarChar(250)
+  price        Float
+  tags         String?       @db.VarChar(250)
+  status       String        @db.VarChar(250)
   catalogId   Int?
   title       String   @db.VarChar(250)
   catalog     Catalog? @relation(fields: [catalogId], references: [idCatalog], onDelete: NoAction, onUpdate: NoAction)
