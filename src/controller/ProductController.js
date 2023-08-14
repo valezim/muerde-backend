@@ -21,7 +21,7 @@ class ProductController {
         try {
             const imageFile = req.files?.image;
             const idProduct = req.query.id;
-            const Product = humps.camelizeKeys(req.body.product);
+            const Product = humps.camelizeKeys(req.body);
             const updatedProduct = await ProductService.putProduct({ ...Product, idProduct, imageFile });
             return res.json({ ...humps.decamelizeKeys(updatedProduct) });
         } catch (error) {
