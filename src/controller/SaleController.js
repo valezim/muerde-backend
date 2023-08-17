@@ -41,8 +41,11 @@ class SaleController {
     try {
       const idSale = req.query.id;
       const { state } = req.body;
-
       const updatedSale = await SaleService.putSale({ idSale, state });
+      const clientInfo = await UserService.getById(updatedSale.userId);
+      if (updatedSale.status == "FINISHED") {
+        MailService.sendReviewRequest(clientInfo.mail);
+      }
       return res.json({ ...humps.decamelizeKeys(updatedSale) });
     } catch (error) {
       console.log(`Error - SaleController :: putSale - ${error}`);
