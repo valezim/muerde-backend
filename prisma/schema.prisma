@@ -11,6 +11,9 @@ model Service {
   idService   Int      @id @unique(map: "idService_UNIQUE") @default(autoincrement())
   description String?  @db.VarChar(250)
   image       String?  @db.VarChar(250)
+  price        Float
+  tags         String?       @db.VarChar(250)
+  status       String        @db.VarChar(250)
   catalogId   Int?
   title       String   @db.VarChar(250)
   catalog     Catalog? @relation(fields: [catalogId], references: [idCatalog], onDelete: NoAction, onUpdate: NoAction)
@@ -133,11 +136,18 @@ model User {
   mail         String   @unique @db.VarChar(250)
   password     String   @db.VarChar(250)
   address      String   @db.VarChar(250)
-  phone        String   @unique @db.VarChar(250)   
+  phone        String   @unique @db.VarChar(250)
   creationDate DateTime @db.DateTime(0)
   role         Role     @default(USER)
   Review       Review[]
   Sale         Sale[]
+}
+
+model Setting {
+  idSetting     Int       @id @unique(map: "idSetting_UNIQUE") @default(autoincrement())
+  last_modified DateTime? @db.DateTime(0)
+  key           String    @unique @db.VarChar(250)
+  value         String    @db.VarChar(250)
 }
 
 enum Role {
