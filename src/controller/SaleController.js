@@ -1,15 +1,13 @@
 const humps = require('humps');
 const SaleService = require('../service/SaleService');
 const { SALE_STATES } = require('../config/default');
-const MailService = require('../service/MailService'); // borrar
+const MailService = require('../service/MailService');
+const UserService = require('../service/UserService');
 
 class SaleController {
   static async getSales(req, res) {
     try {
       const idSale = req.query.id;
-
-      MailService.sendPurchaseConfirmation("fatinobleg@gmail.com") // borrar
-
       if (idSale) {
         const sale = await SaleService.getSalesById({ idSale });
         return res.json({ ...humps.decamelizeKeys(sale) });
@@ -59,6 +57,8 @@ class SaleController {
     try {
       const newSale = humps.camelizeKeys(req.body.sale);
       const createdSale = await SaleService.postSale(newSale);
+      const clientInfo = await UserService.getById(createdSale.userId);
+      MailService.sendPurchaseConfirmation(clientInfo.mail);
       return res.json({ ...humps.decamelizeKeys(createdSale) });
     } catch (error) {
       console.log(`Error - SaleController :: postSale - ${error}`);
