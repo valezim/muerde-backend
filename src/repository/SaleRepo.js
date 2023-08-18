@@ -223,7 +223,6 @@ class SaleRepo extends BaseRepo {
   }
 
   async save(sale) {
-    console.log('saleee ', sale);
     try {
       let cost = 0;
       let price = 0;

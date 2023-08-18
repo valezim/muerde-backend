@@ -5,7 +5,6 @@ class ReviewService {
     static async getReviews() {
         try {
             const reviews = await ReviewRepo.getReviews();
-            console.log('las review servicio: ', reviews);
             return reviews;
         } catch (error) {
             console.log(`Error - ReviewService :: getReviews - ${error.stack}`);
