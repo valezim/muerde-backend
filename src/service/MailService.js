@@ -1,5 +1,8 @@
 const nodemailer = require('nodemailer');
 require('dotenv').config();
+const fs = require('fs');
+const purchaseConfirmationHTML = fs.readFileSync('src/email_templates/purchaseConfirmation.html', 'utf-8');
+const reviewRequestHTML = fs.readFileSync('src/email_templates/reviewRequest.html', 'utf-8');
 
 class MailService {
     constructor() {
@@ -23,8 +26,8 @@ class MailService {
             from: 'Muerde Repostería <muerde.reposteria@outlook.com>',
             to: email,
             subject: "Confirmación de compra",
-            text: "Gracias por su compra",
-            html: "<b>Gracias por su compra</b>",
+            text: "Gracias por tu compra",
+            html: purchaseConfirmationHTML,
         };
 
         return await this.transporter.sendMail(mailOptions);
@@ -35,8 +38,8 @@ class MailService {
             from: 'Muerde Repostería <muerde.reposteria@outlook.com>',
             to: email,
             subject: "Solicitud de reseña",
-            text: "Por favor, deje una reseña para su reciente compra",
-            html: "<b>Por favor, deje una reseña para su reciente compra</b>",
+            text: "Por favor, deja una reseña para tu reciente compra",
+            html: reviewRequestHTML,
         };
 
         return await this.transporter.sendMail(mailOptions);
