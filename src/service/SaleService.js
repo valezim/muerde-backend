@@ -57,10 +57,26 @@ class SaleService {
     }
   }
 
-
-  async postSale({ deliveryType, userId, userDate, products = [] }) {
+  async putSaleTransferNumber({ idSale, transferNumber }) {
     try {
-      const createdSale = await SaleRepo.save({ deliveryType, userId, userDate, products });
+      const idSaleNumber = Number(idSale);
+
+      const updatedSale = await SaleRepo.updateTransferNumber({
+        idSale: idSaleNumber,
+        transferNumber,
+      });
+
+      return updatedSale;
+    } catch (error) {
+      console.log(`Error - SaleService :: putSaleTransferNumber - ${error.stack}`);
+      throw error;
+    }
+  }
+
+
+  async postSale({ deliveryType, paymentMethod, userId, userDate, products = [] }) {
+    try {
+      const createdSale = await SaleRepo.save({ deliveryType, paymentMethod, userId, userDate, products });
       products.forEach(async (product) => {
         await SaleProductRepo.save({
           saleId: createdSale.idSale,
