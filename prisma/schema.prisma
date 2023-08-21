@@ -54,6 +54,8 @@ model Sale {
   finish_date     DateTime?     @db.DateTime(0)
   status          Status        @default(TODO)
   delivery_type   DeliveryType  @default(PICK_UP)
+  payment_method  PaymentMethod @default(CASH)
+  transfer_number String?       @db.VarChar(250)
   total_earn_cost Float
   total_loss_cost Float
   userId          Int
@@ -171,4 +173,9 @@ enum Status {
 enum DeliveryType {
   PICK_UP
   DELIVERY
+}
+
+enum PaymentMethod {
+  CASH
+  TRANSFER
 }

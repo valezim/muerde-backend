@@ -40,8 +40,15 @@ class SaleController {
   static async putSale(req, res) {
     try {
       const idSale = req.query.id;
-      const { state } = req.body;
-      const updatedSale = await SaleService.putSale({ idSale, state });
+      const { state, transfer_number } = req.body;
+      const transferNumber = transfer_number;
+      let updatedSale;
+      if(transferNumber) {
+        updatedSale = await SaleService.putSaleTransferNumber({ idSale, transferNumber });
+      }
+      if(state) {
+        updatedSale = await SaleService.putSale({ idSale, state });
+      }
       const clientInfo = await UserService.getById(updatedSale.userId);
       if (updatedSale.status == "FINISHED") {
         MailService.sendReviewRequest(clientInfo.mail);

@@ -20,6 +20,8 @@ class SaleRepo extends BaseRepo {
           status: true,
           total_earn_cost: true,
           total_loss_cost: true,
+          payment_method: true,
+          transfer_number: true,
           products: {
             select: {
               product: {
@@ -73,6 +75,8 @@ class SaleRepo extends BaseRepo {
           status: true,
           total_earn_cost: true,
           total_loss_cost: true,
+          payment_method: true,
+          transfer_number: true,
           products: {
             select: {
               product: {
@@ -123,6 +127,8 @@ class SaleRepo extends BaseRepo {
           status: true,
           total_earn_cost: true,
           total_loss_cost: true,
+          payment_method: true,
+          transfer_number: true,
           products: {
             select: {
               product: {
@@ -177,6 +183,24 @@ class SaleRepo extends BaseRepo {
       throw error;
     }
   }
+
+  async updateTransferNumber({ idSale, transferNumber }) {
+    try {
+      const updatedSale = await this.db.Sale.update({
+        where: {
+          idSale: idSale,
+        },
+        data: {
+          transfer_number: transferNumber,
+        },
+      });
+      return updatedSale;
+    } catch (error) {
+      console.log(`Error - SaleRepo :: updateTransferNumber - ${error.stack}`);
+      throw error;
+    }
+  }
+
 
   async getPriceAndCost(idProduct) {
     try {
@@ -245,6 +269,7 @@ class SaleRepo extends BaseRepo {
           status: 'TODO',
           total_earn_cost: price,
           total_loss_cost: cost,
+          payment_method: sale.paymentMethod,
           userId: Number(sale.userId),
         },
       });
