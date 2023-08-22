@@ -1,6 +1,4 @@
 const SaleRepo = require('../repository/SaleRepo');
-
-const SaleDTO = require('../dto/SaleDTO');
 const SaleProductRepo = require('../repository/SaleProductRepo');
 const DynamicProductStockService = require('./DynamicProductStockService');
 const UserService = require('./UserService');
@@ -10,8 +8,7 @@ class SaleService {
   async getAllSales() {
     try {
       const sales = await SaleRepo.getAll();
-      const SalesDTO = sales.map((sale) => new SaleDTO(sale));
-      return SalesDTO;
+      return sales;
     } catch (error) {
       console.log(`Error - SaleService :: getAllSales - ${error.stack}`);
       throw error;
