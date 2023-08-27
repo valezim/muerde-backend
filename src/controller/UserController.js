@@ -38,9 +38,9 @@ class UserController {
             const token = jwt.sign({ id: user.idUser }, process.env.JWT_SECRET, { expiresIn: '1h' });
             return res.json({ ...humps.decamelizeKeys(user), token: token });
         } catch (error) {
-            console.log(`Error - UserController :: getUserByMail - ${error}`);
+            console.log(`Error - UserController :: getUserByMail - `, error);
             return res.status(error.status || 500).json({
-                error: 'Unexpected error while trying to get user',
+                error: error,
             });
         }
     }

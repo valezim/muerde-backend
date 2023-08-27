@@ -45,13 +45,13 @@ class UserService {
                     const { password, ...userWithoutPassword } = user;
                     return userWithoutPassword;
                 } else {
-                    throw { status: 401, message: 'Invalid password' };
+                    throw { status: 401, error: 'Invalid password' };
                 }
             } else {
-                throw { status: 404, message: 'User not found' };
+                throw { status: 404, error: 'User not found' };
             }
         } catch (error) {
-            console.log(`Error - UserService :: getUserByMail - ${error.stack}`);
+            console.log(`Error - UserService :: getUserByMail`, error);
             throw error;
         }
     }
