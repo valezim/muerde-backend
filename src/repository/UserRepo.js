@@ -35,7 +35,7 @@ class UserRepo extends BaseRepo {
                     address: user.address,
                     phone: user.phone,
                     creationDate: new Date(),
-                    role: 'USER',
+                    role: user.role,
                 },
                 select: {
                     idUser: true,
