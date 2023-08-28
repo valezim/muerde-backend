@@ -60,6 +60,20 @@ class CatalogRepo extends BaseRepo {
     }
   }
 
+  async getByType({type}) {
+    try {
+      const catalog = await this.db.Catalog.findFirst({
+        where: {
+          type: type,
+        },
+      });
+      return catalog;
+    } catch (error) {
+      console.log(`Error - CatalogRepo :: getByType - ${error.stack}`);
+      throw error;
+    }
+  }
+
   async delete({idCatalog}) {
     try {
       await this.db.Catalog.delete({
