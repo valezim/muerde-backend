@@ -50,8 +50,12 @@ class SaleController {
         updatedSale = await SaleService.putSale({ idSale, state });
       }
       const clientInfo = await UserService.getById(updatedSale.userId);
-      if (updatedSale.status == "FINISHED") {
-        MailService.sendReviewRequest(clientInfo.mail);
+      try {
+        if (updatedSale.status == "FINISHED") {
+          MailService.sendReviewRequest(clientInfo.mail);
+        }
+      } catch (error) {
+        console.log(`Email Sending Error - SaleController :: putSale - ${error}`);
       }
       return res.json({ ...humps.decamelizeKeys(updatedSale) });
     } catch (error) {
@@ -68,7 +72,11 @@ class SaleController {
       const newSale = humps.camelizeKeys(req.body.sale);
       const createdSale = await SaleService.postSale(newSale);
       const clientInfo = await UserService.getById(createdSale.userId);
-      MailService.sendPurchaseConfirmation(clientInfo.mail);
+      try {
+        MailService.sendPurchaseConfirmation(clientInfo.mail);
+      } catch (error) {
+        console.log(`Email Sending Error - SaleController :: postSale - ${error}`);
+      }
       return res.json({ ...humps.decamelizeKeys(createdSale) });
     } catch (error) {
       console.log(`Error - SaleController :: postSale - ${error}`);
