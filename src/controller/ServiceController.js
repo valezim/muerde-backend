@@ -4,7 +4,7 @@ const ServiceService = require('../service/ServiceService');
 class ServiceController {
     static async postService(req, res) {
         try {
-            const newService = humps.camelizeKeys(req.body.service);
+            const newService = humps.camelizeKeys(req.body);
             const createdService = await ServiceService.postService(newService);
             return res.json({ ...humps.decamelizeKeys(createdService) });
         } catch (error) {
@@ -17,9 +17,10 @@ class ServiceController {
 
     static async putService(req, res) {
         try {
+            const imageFile = req.files?.image
             const idService = req.query.id;
-            const Service = humps.camelizeKeys(req.body.service);
-            const updatedService = await ServiceService.putService({ ...Service, idService });
+            const Service = humps.camelizeKeys(req.body);
+            const updatedService = await ServiceService.putService({ ...Service, idService, imageFile });
             return res.json({ ...humps.decamelizeKeys(updatedService) });
         } catch (error) {
             console.log(`Error - ServiceController :: putService - ${error}`);

@@ -1,6 +1,7 @@
 const ProductRepo = require('../repository/ProductRepo');
 const DynamicProductStockService = require('./DynamicProductStockService');
 const BucketService = require('../service/BucketService');
+const CatalogServiceService = require('../service/CatalogService');
 
 class ProductService {
   async postProduct({ title, description, imageFile, price, tags, status, recipeId, catalogId }) {
@@ -14,10 +15,13 @@ class ProductService {
       console.log(`Error - ProductService :: postProduct - Error while saving image - ${error.stack}`);
     }
 
+
+
     try {
       const priceNumber = Number(price);
       const recipeIdNumber = Number(recipeId);
-      const catalogIdNumber = Number(catalogId);
+      const catalog = await CatalogServiceService.getCatalogByType({ type: 'ProductCatalog' });
+      const catalogIdNumber = catalog.idCatalog;
       const isOutOfStock = await DynamicProductStockService.isRecipeAvailableFromIngredientsStock(recipeIdNumber) ?
         false :
         true;

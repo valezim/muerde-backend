@@ -1,4 +1,5 @@
 const CatalogRepo = require('../repository/CatalogRepo');
+const { get } = require('../route/UserRoute/UserRoute');
 
 class CatalogService {
   async postCatalog({type}) {
@@ -28,6 +29,21 @@ class CatalogService {
       return catalogs;
     } catch (error) {
       console.log(`Error - CatalogService :: getAllCatalogs - ${error.stack}`);
+      throw error;
+    }
+  }
+
+  async getCatalogByType({type}) {
+    try {
+      const catalog = await CatalogRepo.getByType({type});
+      if (!catalog) {
+        const newCatalog = await CatalogRepo.save({type});
+        console.log('el catalogo es new', newCatalog)
+        return newCatalog;
+      }
+      return catalog;
+    } catch (error) {
+      console.log(`Error - CatalogService :: getCatalogByType - ${error.stack}`);
       throw error;
     }
   }

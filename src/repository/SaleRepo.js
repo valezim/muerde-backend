@@ -168,13 +168,16 @@ class SaleRepo extends BaseRepo {
 
   async update({ idSale, state }) {
     try {
+      const d = new Date();
+      const gmtMinus3Offset = 180;
+      const creationDate = new Date(d - gmtMinus3Offset * 60 * 1000);
       const updatedSale = await this.db.Sale.update({
         where: {
           idSale: idSale,
         },
         data: {
           status: state,
-          finish_date: state == 'FINISHED' ? new Date() : null,
+          finish_date: state == 'FINISHED' ? creationDate : null,
         },
       });
       return updatedSale;
@@ -261,10 +264,14 @@ class SaleRepo extends BaseRepo {
       }
 
       const dateAsDateTime = new Date(sale.userDate);
+      const gmtMinus3Offset = 180;
+      const newDate = new Date(dateAsDateTime - gmtMinus3Offset * 60 * 1000);
+      const d = new Date();
+      const creationDate = new Date(d - gmtMinus3Offset * 60 * 1000);
       const newSale = await this.db.Sale.create({
         data: {
-          start_date: new Date(),
-          user_date: dateAsDateTime,
+          start_date: creationDate,
+          user_date: newDate,
           delivery_type: sale.deliveryType,
           status: 'TODO',
           total_earn_cost: price,
