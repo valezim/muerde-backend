@@ -24,9 +24,9 @@ class UserController {
             const token = jwt.sign({ id: createdUser.idUser }, process.env.JWT_SECRET, { expiresIn: '1h' });
             return res.json({ ...humps.decamelizeKeys(createdUser), token: token });
         } catch (error) {
-            console.log(`Error - UserController :: postUser - ${error}`);
+            console.log(`Error - UserController :: postUser - `, error);
             return res.status(error.status || 500).json({
-                error: 'Unexpected error while trying to create user',
+                error: error,
             });
         }
     }  

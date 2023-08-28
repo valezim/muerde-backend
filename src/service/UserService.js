@@ -31,7 +31,14 @@ class UserService {
             const newUser = await UserRepo.save(user);
             return newUser;
         } catch (error) {
-            console.log(`Error - UserService :: postUser - ${error.stack}`);
+            console.log(`Error - UserService :: postUser - `, error);        
+            if (error.code === 'P2002' && error.meta && error.meta.target) {
+                if (error.meta.target.includes('User_mail_key')) {
+                    throw { status: 409, error: 'Ya existe un cliente con este correo electrónico' };
+                } else if (error.meta.target.includes('User_phone_key')) {
+                    throw { status: 400, error: 'Ya existe un cliente con este número de teléfono' };
+                }
+            }                
             throw error;
         }
     }
