@@ -115,7 +115,7 @@ model RecipeIngredient {
   ingredientId Int
   quantity     Float
   ingredient   Ingredient @relation(fields: [ingredientId], references: [idIngredient], onDelete: NoAction, onUpdate: NoAction)
-  recipe       Recipe     @relation(fields: [recipeId], references: [idRecipe], onDelete: NoAction, onUpdate: NoAction)
+  recipe       Recipe     @relation(fields: [recipeId], references: [idRecipe], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([recipeId, ingredientId])
   @@index([ingredientId], map: "RecipeIngredient_ingredientId_fkey")
