@@ -18,7 +18,7 @@ class ServiceService {
 
     try {
       const priceNumber = Number(price);
-      const catalog = await CatalogServiceService.getCatalogByType({ type: 'ServiceCatalog' });
+      const catalog = await CatalogServiceService.getCatalogByType({ type: 'SERVICE' });
       const catalogIdNumber = catalog.idCatalog;
       const createdService = await ServiceRepo.save({
         title,

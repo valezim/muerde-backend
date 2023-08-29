@@ -20,7 +20,7 @@ class ProductService {
     try {
       const priceNumber = Number(price);
       const recipeIdNumber = Number(recipeId);
-      const catalog = await CatalogServiceService.getCatalogByType({ type: 'ProductCatalog' });
+      const catalog = await CatalogServiceService.getCatalogByType({ type: 'PRODUCT' });
       const catalogIdNumber = catalog.idCatalog;
       const isOutOfStock = await DynamicProductStockService.isRecipeAvailableFromIngredientsStock(recipeIdNumber) ?
         false :
