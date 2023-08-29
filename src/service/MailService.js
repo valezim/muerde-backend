@@ -3,9 +3,11 @@ require('dotenv').config();
 const fs = require('fs');
 const purchaseConfirmationHTML = fs.readFileSync('src/email_templates/purchaseConfirmation.html', 'utf-8');
 const reviewRequestHTML = fs.readFileSync('src/email_templates/reviewRequest.html', 'utf-8');
+let isEmailEnabled;
 
 class MailService {
     constructor() {
+        this.isEmailEnabled = true;
         this.transporter = nodemailer.createTransport({
             host: "smtp.office365.com",
             port: 587,
@@ -21,7 +23,14 @@ class MailService {
         });
     }
 
+    toggleEmailStatus() { 
+        this.isEmailEnabled = !this.isEmailEnabled;
+    }
+
     async sendPurchaseConfirmation(email) {
+        if (!this.isEmailEnabled) {
+            return { success: false, error: 'El envío de correo está deshabilitado' };
+        }
         try {
             let mailOptions = {
                 from: 'Muerde Repostería <muerde.reposteria@outlook.com>',
@@ -40,6 +49,9 @@ class MailService {
     }
     
     async sendReviewRequest(email) {
+        if (!this.isEmailEnabled) {
+            return { success: false, error: 'El envío de correo está deshabilitado' };
+        }
         try {
             let mailOptions = {
                 from: 'Muerde Repostería <muerde.reposteria@outlook.com>',
