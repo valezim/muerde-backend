@@ -15,7 +15,6 @@ const catalogRoute = require('./route/CatalogRoute');
 const userRoute = require('./route/UserRoute');
 const reviewRoute = require('./route/ReviewRoute');
 const settingRoute = require('./route/SettingRoute');
-const mailRoute = require('./route/MailRoute');
 
 const app = express();
 
@@ -43,7 +42,6 @@ app.use('/catalog', catalogRoute);
 app.use('/user', userRoute);
 app.use('/review', reviewRoute);
 app.use('/setting', settingRoute);
-app.use('/toggleEmail', mailRoute);
 
 const port = process.env.port || 8000;
 app.listen(port, () => console.log(`Server is running on port ${port}`));
