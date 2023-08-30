@@ -2,17 +2,6 @@ const humps = require('humps');
 const MailService = require('../service/MailService');
 
 class MailController {
-    static async toggleEmail(req, res) {
-        MailService.toggleEmailStatus();
-        const now = new Date();
-        const currentTime = now.toISOString();
-
-        return res.json({
-            message: `El envío de correo está ${MailService.isEmailEnabled ? 'habilitado' : 'deshabilitado'}`,
-            lastModified: currentTime
-        });
-    }
-
     static async sendPurchaseConfirmation(req, res) {
         try {
             const { email } = req.body;

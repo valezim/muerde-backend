@@ -35,6 +35,20 @@ class IngredientRepo extends BaseRepo {
       throw error;
     }
   }
+
+  async getSetting(key) {
+    try {
+      const setting = await this.db.Setting.findFirst({
+        where: {
+          key: key,
+        },
+      });
+      return setting;
+    } catch (error) {
+      console.log(`Error - SettingRepo :: getSetting - ${error.stack}`);
+      throw error;
+    }
+  }  
 }
 
 module.exports = new IngredientRepo();
