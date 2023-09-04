@@ -3,6 +3,7 @@ const SaleProductRepo = require('../repository/SaleProductRepo');
 const DynamicProductStockService = require('./DynamicProductStockService');
 const UserService = require('./UserService');
 const ProductRepo = require('../repository/ProductRepo');
+const { EXTRA_PREPARATION_TIME_MINUTE_PERCENTAGE } = require('../config/default');
 
 class SaleService {
   async getAllSales() {
@@ -224,7 +225,9 @@ class SaleService {
     if (productQuantity <= 1) {
       return preparationTimeMinutes;
     } else {
-      const extraPreparationTime = (productQuantity - 1) * (preparationTimeMinutes * 0.15);
+      const extraPreparationTime = (productQuantity - 1) * (
+        preparationTimeMinutes * EXTRA_PREPARATION_TIME_MINUTE_PERCENTAGE
+      );
       return preparationTimeMinutes + extraPreparationTime;
     }
   }
