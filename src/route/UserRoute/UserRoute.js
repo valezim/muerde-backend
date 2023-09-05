@@ -5,6 +5,7 @@ const {
   validatePutUser,
 } = require('./middlewares/userValidator');
 
+const { validateJWT } = require('../middlewares/validateJWT');
 const {
   generalQueryValidator,
   generalQueryValidatorIdRequired} = require('../middlewares/commonValidatorMiddlewares');
@@ -18,5 +19,6 @@ router.route('/').post(validatePostUser, UserController.postUser);
 router.route('/').put(generalQueryValidatorIdRequired, validatePutUser, UserController.putUser);
 
 router.post('/login', UserController.getUserByMail);
+router.post('/auth', validateJWT, UserController.getTokenTrue);
 
 module.exports = router;
