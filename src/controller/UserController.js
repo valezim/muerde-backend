@@ -5,6 +5,17 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 class UserController {
+    static getTokenTrue(req, res) {
+        try {
+            return res.json(humps.decamelizeKeys(req.usuario));
+        } catch (error) {
+            console.log(`Error - UserController :: getTokenTrue - ${error}`);
+            return res.status(error.status || 500).json({
+                error: 'Unexpected error while trying to getTokenTrue',
+            });
+        }
+    }
+
     static async getUsers(req, res) {
         try {
             const users = await UserService.getUsers();
