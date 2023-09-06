@@ -110,6 +110,22 @@ class IngredientRepo extends BaseRepo {
       throw error;
     }
   }
+  async getIngredientStock({ idIngredient }) {
+    try {
+      const ingredient = await this.db.Ingredient.findUnique({
+        where: {
+          idIngredient: idIngredient,
+        },
+        select: {
+          totalQuantity: true,
+        },
+      });
+      return ingredient;
+    } catch (error) {
+      console.log(`Error - IngredientRepo :: getIngredientStock - ${error.stack}`);
+      throw error;
+    }
+  }
 
 
   async updateStock({ idIngredient, quantity }) {

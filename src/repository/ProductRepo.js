@@ -156,6 +156,25 @@ class ProductRepo extends BaseRepo {
       throw error;
     }
   }
+  
+  async getStockAmountByProductId( productId ) {
+    try {
+      const fullProduct = await this.getByIdWithIngredientsId({ idProduct: productId });
+      let maxProductStock = Number.MAX_SAFE_INTEGER;
+      for (let i = 0; i < fullProduct.recipe.RecipeIngredient.length; i++) {
+        const ingStockTotal = await IngredientRepo.getIngredientStock({ idIngredient: fullProduct.recipe.RecipeIngredient[i].ingredientId });
+        const productStock = ingStockTotal.totalQuantity / fullProduct.recipe.RecipeIngredient[i].quantity;
+        const productStockInt = Math.floor(productStock);
+        if (productStockInt < maxProductStock) {
+          maxProductStock = productStockInt;
+        }
+      }
+      return maxProductStock;
+    } catch (error) {
+      console.log(`Error - ProductRepo :: updateIngredientStock - ${error.stack}`);
+      throw error;
+    }
+  }
 
   async getProductsByRecipeId(recipeId) {
     try {
