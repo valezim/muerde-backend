@@ -253,14 +253,30 @@ class SaleRepo extends BaseRepo {
     try {
       let cost = 0;
       let price = 0;
+      let outOfStock = false;
+
       for (let i = 0; i < sale.products.length; i++) {
         const data = await this.getPriceAndCost(sale.products[i].productId);
+        const productStock = await ProductRepo.getStockAmountByProductId(sale.products[i].productId);
+        if (productStock < sale.products[i].quantity) {
+          outOfStock = true;
+          throw new Error(`INSUFFICIENT_STOCK: No alcanza el stock para el producto ${sale.products[i].productId} con cantidad ${sale.products[i].quantity}`);
+        }
         price += data.price * sale.products[i].quantity;
         cost += data.cost * sale.products[i].quantity;
-        await ProductRepo.updateIngredientStock({
-          product: sale.products[i].productId,
-          quantity: sale.products[i].quantity,
-        });
+      }
+
+
+      if (!outOfStock) {
+        for (let i = 0; i < sale.products.length; i++) {
+          await ProductRepo.updateIngredientStock({
+            product: sale.products[i].productId,
+            quantity: sale.products[i].quantity,
+          });
+        }
+      }
+      else{
+        throw new Error('INSUFFICIENT_STOCK: No hay stock de algunos ingredientes.');
       }
 
       const dateAsDateTime = new Date(sale.userDate);
