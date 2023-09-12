@@ -3,7 +3,7 @@ const SaleProductRepo = require('../repository/SaleProductRepo');
 const DynamicProductStockService = require('./DynamicProductStockService');
 const UserService = require('./UserService');
 const ProductRepo = require('../repository/ProductRepo');
-const { EXTRA_PREPARATION_TIME_MINUTE_PERCENTAGE } = require('../config/default');
+const { EXTRA_PREPARATION_TIME_MINUTE_PERCENTAGE, COMMON_INGREDIENTS_PERCENTAGE } = require('../config/default');
 
 class SaleService {
   async getAllSales() {
@@ -238,7 +238,7 @@ class SaleService {
       (ingredient1) =>
         ingredients2.some((ingredient2) => ingredient1.id_ingredient === ingredient2.id_ingredient),
     ).length;
-    const minCommonIngredients = Math.min(ingredients1.length, ingredients2.length) * 0.7;
+    const minCommonIngredients = Math.min(ingredients1.length, ingredients2.length) * COMMON_INGREDIENTS_PERCENTAGE;
     return commonIngredientsCount >= minCommonIngredients;
   };
 
