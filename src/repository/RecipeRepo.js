@@ -6,7 +6,7 @@ class RecipeRepo extends BaseRepo {
   }
 
   async save(recipe) {
-    console.log("receta que llega al repo: ", recipe);
+    console.log('receta que llega al repo: ', recipe);
     try {
       const newRecipe = await this.db.Recipe.create({
         data: {
@@ -51,7 +51,7 @@ class RecipeRepo extends BaseRepo {
     }
   }
 
-  async getById({idRecipe}) {
+  async getById({ idRecipe }) {
     try {
       const recipe = await this.db.Recipe.findUnique({
         where: {
@@ -65,7 +65,25 @@ class RecipeRepo extends BaseRepo {
     }
   }
 
-  async delete({idRecipe}) {
+  async getByIdWithProduct({ idRecipe }) {
+    try {
+      const recipe = await this.db.Recipe.findUnique({
+        where: {
+          idRecipe: idRecipe,
+        },
+        include: {
+          Product: true,
+        },
+      });
+
+      return recipe;
+    } catch (error) {
+      console.log(`Error - RecipeRepo :: getByIdWithProduct - ${error.stack}`);
+      throw error;
+    }
+  }
+
+  async delete({ idRecipe }) {
     try {
       await this.db.Recipe.delete({
         where: {
@@ -78,10 +96,10 @@ class RecipeRepo extends BaseRepo {
     }
   }
 
-  async getByProductId({productId}) {
+  async getByProductId({ productId }) {
     try {
       const recipe = await this.db.Recipe.findFirst({
-        where: {Product: {idProduct: productId}},
+        where: { Product: { idProduct: productId } },
       });
       return recipe;
     } catch (error) {

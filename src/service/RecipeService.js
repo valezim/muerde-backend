@@ -1,11 +1,12 @@
 const RecipeRepo = require('../repository/RecipeRepo');
 const RecipeIngredientRepo = require('../repository/RecipeIngredientRepo');
+const DynamicProductStockService = require('../service/DynamicProductStockService');
 
 class RecipeService {
-  async postRecipe({name, instructions, preparationTimeMinutes, ingredients = []}) {
+  async postRecipe({ name, instructions, preparationTimeMinutes, ingredients = [] }) {
     try {
       const preparationTimeMinutesNumber = Number(preparationTimeMinutes);
-      const createdRecipe = await RecipeRepo.save({name, instructions, preparationTimeMinutesNumber, ingredients});
+      const createdRecipe = await RecipeRepo.save({ name, instructions, preparationTimeMinutesNumber, ingredients });
       ingredients.forEach((ingredient) => {
         const ingredientIdNumber = Number(ingredient.ingredientId);
         const quantityNumber = Number(ingredient.quantity);
@@ -21,8 +22,8 @@ class RecipeService {
       throw error;
     }
   }
-  
-  async putRecipe({idRecipe, name, instructions, preparationTimeMinutes, ingredients}) {
+
+  async putRecipe({ idRecipe, name, instructions, preparationTimeMinutes, ingredients }) {
     try {
       const idRecipeNumber = Number(idRecipe);
       const updatedRecipe = await RecipeRepo.update({
@@ -36,6 +37,8 @@ class RecipeService {
         const quantityNumber = Number(ingredient.quantity);
         RecipeIngredientRepo.update(idRecipeNumber, ingredientIdNumber, quantityNumber);
       });
+      const { Product } = await RecipeRepo.getByIdWithProduct({ idRecipe: idRecipeNumber });
+      await DynamicProductStockService.updateProductOOSByProductId(Product?.idProduct);
       return updatedRecipe;
     } catch (error) {
       console.log(`Error - RecipeService :: putRecipe - ${error.stack}`);
@@ -53,10 +56,10 @@ class RecipeService {
     }
   }
 
-  async getRecipeById({idRecipe}) {
+  async getRecipeById({ idRecipe }) {
     try {
       const idRecipeNumber = Number(idRecipe);
-      const recipe = await RecipeRepo.getById({idRecipe: idRecipeNumber});
+      const recipe = await RecipeRepo.getById({ idRecipe: idRecipeNumber });
       return recipe;
     } catch (error) {
       console.log(`Error - RecipeService :: getRecipeById - ${error.stack}`);
@@ -64,10 +67,10 @@ class RecipeService {
     }
   }
 
-  async deleteRecipe({idRecipe}) {
+  async deleteRecipe({ idRecipe }) {
     try {
       const idRecipeNumber = Number(idRecipe);
-      await RecipeRepo.delete({idRecipe: idRecipeNumber});
+      await RecipeRepo.delete({ idRecipe: idRecipeNumber });
     } catch (error) {
       console.log(`Error - RecipeService :: deleteRecipe - ${error.stack}`);
       throw error;
@@ -84,7 +87,7 @@ class RecipeService {
     }
   }
 
-  async getRecipesWithoutProducts() { 
+  async getRecipesWithoutProducts() {
     try {
       const recipesWithoutProducts = await RecipeRepo.getRecipesWithoutProducts();
       return recipesWithoutProducts;
