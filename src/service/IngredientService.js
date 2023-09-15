@@ -21,8 +21,11 @@ class IngredientService {
         name,
         unit,
         lastPurchaseCost,
-        totalQuantity,
+        totalQuantity: totalQuantity ? Number(totalQuantity) : undefined,
       });
+      if (totalQuantity) {
+        await DynamicProductStockService.updateProductOOSByIngredient(Number(idIngredient));
+      }
       return updatedIngredient;
     } catch (error) {
       console.log(`Error - IngredientService :: putIngredient - ${error.stack}`);
