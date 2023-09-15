@@ -38,7 +38,10 @@ class RecipeService {
         RecipeIngredientRepo.update(idRecipeNumber, ingredientIdNumber, quantityNumber);
       });
       const { Product } = await RecipeRepo.getByIdWithProduct({ idRecipe: idRecipeNumber });
-      await DynamicProductStockService.updateProductOOSByProductId(Product?.idProduct);
+      if (Product?.idProduct) {
+        await DynamicProductStockService.updateProductOOSByProductId(Product?.idProduct);
+      }
+
       return updatedRecipe;
     } catch (error) {
       console.log(`Error - RecipeService :: putRecipe - ${error.stack}`);
