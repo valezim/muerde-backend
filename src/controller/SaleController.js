@@ -1,6 +1,6 @@
 const humps = require('humps');
 const SaleService = require('../service/SaleService');
-const { SALE_STATES } = require('../config/default');
+const { SALE_STATES, MAX_PREPARATION_TIME_PER_DAY_MINUTES_ENABLED } = require('../config/default');
 const MailService = require('../service/MailService');
 const UserService = require('../service/UserService');
 
@@ -43,15 +43,15 @@ class SaleController {
       const { state, transfer_number } = req.body;
       const transferNumber = transfer_number;
       let updatedSale;
-      if(transferNumber) {
+      if (transferNumber) {
         updatedSale = await SaleService.putSaleTransferNumber({ idSale, transferNumber });
       }
-      if(state) {
+      if (state) {
         updatedSale = await SaleService.putSale({ idSale, state });
       }
       const clientInfo = await UserService.getById(updatedSale.userId);
       try {
-        if (updatedSale.status == "FINISHED") {
+        if (updatedSale.status == 'FINISHED') {
           MailService.sendReviewRequest(clientInfo.mail);
         }
       } catch (error) {
@@ -163,7 +163,10 @@ class SaleController {
   static async getOrderPreparationSuggestions(req, res) {
     try {
       const orderPreparationSuggestions = await SaleService.getOrderPreparationSuggestions();
-      return res.json({ order_preparation_suggestion_per_day: humps.decamelizeKeys(orderPreparationSuggestions) });
+      return res.json({
+        order_preparation_suggestion_per_day: humps.decamelizeKeys(orderPreparationSuggestions),
+        max_preparation_time_per_day_minutes_enabled: MAX_PREPARATION_TIME_PER_DAY_MINUTES_ENABLED,
+      });
     } catch (error) {
       console.log(`Error - SaleController :: getOrderPreparationSuggestions - ${error}`);
       return res.status(error.status || 500).json({
