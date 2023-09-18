@@ -5,7 +5,7 @@ const ProductRepo = require('../repository/ProductRepo');
 
 class DynamicProductStockService {
   async changeProductOOSToEnabledIfNeeded(recipeId, recipeIngredients) {
-    const productFromRecipe = await ProductRepo.getByRecipeId({recipeId});
+    const productFromRecipe = await ProductRepo.getByRecipeId({ recipeId });
 
     if (
       productFromRecipe?.isOutOfStock &&
@@ -35,11 +35,12 @@ class DynamicProductStockService {
       );
     });
 
+
     // if recipe is considered Out of Stock, change product status to OUT_OF_STOCK.
     // if not, check if status should be changed to ENABLED.
     if (outOfStock) {
       const updatedProduct = await ProductRepo.updateOOSByRecipeId(
-          recipe.idRecipe, true,
+        recipe.idRecipe, true,
       );
       console.log(`Product with ID ${updatedProduct.idProduct} is now OUT_OF_STOCK`);
     } else {
@@ -48,10 +49,10 @@ class DynamicProductStockService {
   }
 
   async updateProductOOSByIngredient(ingredientId) {
-    const ingredientWithRecipe = await IngredientRepo.getByIdWithRecipe({idIngredient: ingredientId});
+    const ingredientWithRecipe = await IngredientRepo.getByIdWithRecipe({ idIngredient: ingredientId });
 
     const allRecipesFromIngredient = ingredientWithRecipe.RecipeIngredient.map(
-        (recipeIngredient) => recipeIngredient.recipe,
+      (recipeIngredient) => recipeIngredient.recipe,
     );
 
     allRecipesFromIngredient.forEach(async (recipe) => {
@@ -60,8 +61,8 @@ class DynamicProductStockService {
   }
 
   async updateProductOOSByProductId(productId) {
-    const product = await ProductRepo.getById({idProduct: productId});
-    const recipe = await RecipeRepo.getByProductId({productId});
+    const product = await ProductRepo.getById({ idProduct: productId });
+    const recipe = await RecipeRepo.getByProductId({ productId });
 
     if (!recipe) {
       console.log(`No recipe found for product with ID ${productId}`);
@@ -69,6 +70,7 @@ class DynamicProductStockService {
     }
 
     const recipeIngredients = await RecipeIngredientRepo.getAllFromRecipeIdWithIngredients(recipe.idRecipe);
+
 
     const outOfStock = recipeIngredients.some((recipeIngredient) => {
       return (
@@ -79,7 +81,7 @@ class DynamicProductStockService {
     if (outOfStock) {
       if (!product.isOutOfStock) {
         const updatedProduct = await ProductRepo.update(
-            {idProduct: productId, isOutOfStock: true},
+          { idProduct: productId, isOutOfStock: true },
         );
         console.log(`Product with ID ${updatedProduct.idProduct} is now OUT_OF_STOCK`);
       }
@@ -88,11 +90,16 @@ class DynamicProductStockService {
     }
   }
 
+  async updateAllProductOOS() {
+    const allProducts = await ProductRepo.getAll();
+    allProducts?.forEach((product) => this.updateProductOOSByProductId(product.idProduct));
+  }
+
   async isRecipeAvailableFromIngredientsStock(recipeId) {
     let isAvailable = true;
     const ingredientsFromRecipe = await RecipeIngredientRepo.getIngredientsFromRecipe(recipeId);
     ingredientsFromRecipe.forEach((recipeIngredient) => {
-      const {ingredient, quantity} = recipeIngredient;
+      const { ingredient, quantity } = recipeIngredient;
       if (!ingredient.totalQuantity || ingredient.totalQuantity < quantity) {
         isAvailable = false; // If any ingredient has insufficient quantity, recipe is not available to use
       }
