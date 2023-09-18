@@ -3,7 +3,7 @@ const SaleProductRepo = require('../repository/SaleProductRepo');
 const DynamicProductStockService = require('./DynamicProductStockService');
 const UserService = require('./UserService');
 const ProductRepo = require('../repository/ProductRepo');
-const { EXTRA_PREPARATION_TIME_MINUTE_PERCENTAGE, COMMON_INGREDIENTS_PERCENTAGE } = require('../config/default');
+const {EXTRA_PREPARATION_TIME_MINUTE_PERCENTAGE, COMMON_INGREDIENTS_PERCENTAGE} = require('../config/default');
 
 class SaleService {
   async getAllSales() {
@@ -16,10 +16,10 @@ class SaleService {
     }
   }
 
-  async getSalesById({ idSale }) {
+  async getSalesById({idSale}) {
     try {
       const idSaleNumber = Number(idSale);
-      const sale = await SaleRepo.getById({ idSale: idSaleNumber });
+      const sale = await SaleRepo.getById({idSale: idSaleNumber});
       return sale;
     } catch (error) {
       console.log(`Error - SaleService :: getSalesById - ${error.stack}`);
@@ -27,10 +27,10 @@ class SaleService {
     }
   }
 
-  async getSalesByUserId({ idUser }) {
+  async getSalesByUserId({idUser}) {
     try {
       const idUserNumber = Number(idUser);
-      const sale = await SaleRepo.getSaleByUserId({ idUser: idUserNumber });
+      const sale = await SaleRepo.getSaleByUserId({idUser: idUserNumber});
       return sale;
     } catch (error) {
       console.log(`Error - SaleService :: getSalesByUserId - ${error.stack}`);
@@ -39,7 +39,7 @@ class SaleService {
   }
 
 
-  async putSale({ idSale, state }) {
+  async putSale({idSale, state}) {
     try {
       const idSaleNumber = Number(idSale);
 
@@ -55,7 +55,7 @@ class SaleService {
     }
   }
 
-  async putSaleTransferNumber({ idSale, transferNumber }) {
+  async putSaleTransferNumber({idSale, transferNumber}) {
     try {
       const idSaleNumber = Number(idSale);
 
@@ -72,16 +72,16 @@ class SaleService {
   }
 
 
-  async postSale({ deliveryType, paymentMethod, userId, userDate, products = [] }) {
+  async postSale({deliveryType, paymentMethod, userId, userDate, products = []}) {
     try {
-      const createdSale = await SaleRepo.save({ deliveryType, paymentMethod, userId, userDate, products });
+      const createdSale = await SaleRepo.save({deliveryType, paymentMethod, userId, userDate, products});
       products.forEach(async (product) => {
         await SaleProductRepo.save({
           saleId: createdSale.idSale,
           productId: product.productId,
           quantity: product.quantity,
         });
-        await DynamicProductStockService.updateProductOOSByProductId(product.productId);
+        await DynamicProductStockService.updateAllProductOOS();
       });
       return createdSale;
     } catch (error) {
@@ -235,8 +235,8 @@ class SaleService {
   // Helper function to check if two ingredient arrays have at least 70% common ingredients
   hasCommonIngredients(ingredients1, ingredients2) {
     const commonIngredientsCount = ingredients1.filter(
-      (ingredient1) =>
-        ingredients2.some((ingredient2) => ingredient1.id_ingredient === ingredient2.id_ingredient),
+        (ingredient1) =>
+          ingredients2.some((ingredient2) => ingredient1.id_ingredient === ingredient2.id_ingredient),
     ).length;
     const minCommonIngredients = Math.min(ingredients1.length, ingredients2.length) * COMMON_INGREDIENTS_PERCENTAGE;
     return commonIngredientsCount >= minCommonIngredients;
@@ -247,12 +247,12 @@ class SaleService {
 
     data.forEach((dayData) => {
       const preparationSuggestionsMap = new Map();
-      const { day, products } = dayData;
+      const {day, products} = dayData;
 
       products.forEach((product) => {
         const suggestion = {
           total_preparation_time_minutes: this.getPreparationTimeMinutesByProductQuantity(
-            product.preparation_time_minutes, product.quantity,
+              product.preparation_time_minutes, product.quantity,
           ),
           common_ingredients: product.ingredients.map((ingredient) => ({
             id_ingredient: ingredient.id_ingredient,
@@ -276,7 +276,7 @@ class SaleService {
         for (const existingSuggestion of existingSuggestions) {
           if (this.hasCommonIngredients(existingSuggestion.common_ingredients, suggestion.common_ingredients)) {
             existingSuggestion.total_preparation_time_minutes += this.getPreparationTimeMinutesByProductQuantity(
-              product.preparation_time_minutes, product.quantity,
+                product.preparation_time_minutes, product.quantity,
             );
             existingSuggestion.products.push({
               id_product: product.id_product,
@@ -296,7 +296,7 @@ class SaleService {
           preparationSuggestionsMap.set(suggestionKey, suggestion);
         }
       });
-      result.push({ day, preparation_suggestions: [...preparationSuggestionsMap.values()] });
+      result.push({day, preparation_suggestions: [...preparationSuggestionsMap.values()]});
     });
 
 

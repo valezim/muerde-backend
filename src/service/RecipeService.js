@@ -32,10 +32,10 @@ class RecipeService {
         instructions,
         preparationTimeMinutes,
       });
-      ingredients.forEach((ingredient) => {
+      await ingredients.forEach(async (ingredient) => {
         const ingredientIdNumber = Number(ingredient.ingredientId);
         const quantityNumber = Number(ingredient.quantity);
-        RecipeIngredientRepo.update(idRecipeNumber, ingredientIdNumber, quantityNumber);
+        await RecipeIngredientRepo.update(idRecipeNumber, ingredientIdNumber, quantityNumber);
       });
       const { Product } = await RecipeRepo.getByIdWithProduct({ idRecipe: idRecipeNumber });
       if (Product?.idProduct) {
