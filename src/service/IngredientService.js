@@ -25,7 +25,7 @@ class IngredientService {
           Number(totalQuantity) :
           undefined,
       });
-      if (totalQuantity) {
+      if (totalQuantity || totalQuantity === 0 || totalQuantity === "0") {
         await DynamicProductStockService.updateProductOOSByIngredient(Number(idIngredient));
       }
       return updatedIngredient;
