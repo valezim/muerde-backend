@@ -33,7 +33,7 @@ class IngredientRepo extends BaseRepo {
           name: ingredient.name || undefined,
           unit: ingredient.unit || undefined,
           lastPurchaseCost: ingredient.lastPurchaseCost || undefined,
-          totalQuantity: ingredient.totalQuantity || undefined,
+          totalQuantity: (ingredient.totalQuantity || ingredient.totalQuantity === 0) ? ingredient.totalQuantity : undefined,
           lastPurchaseDate: ingredient.lastPurchaseDate || undefined,
         },
       });

@@ -39,7 +39,7 @@ class RecipeService {
       });
       const { Product } = await RecipeRepo.getByIdWithProduct({ idRecipe: idRecipeNumber });
       if (Product?.idProduct) {
-        await DynamicProductStockService.updateProductOOSByProductId(Product?.idProduct);
+        await DynamicProductStockService.updateProductOOSByFromRecipeChange(Product?.idProduct, ingredients);
       }
 
       return updatedRecipe;

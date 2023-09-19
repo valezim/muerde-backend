@@ -21,7 +21,9 @@ class IngredientService {
         name,
         unit,
         lastPurchaseCost,
-        totalQuantity: totalQuantity ? Number(totalQuantity) : undefined,
+        totalQuantity: (totalQuantity || totalQuantity === 0 || totalQuantity === "0") ?
+          Number(totalQuantity) :
+          undefined,
       });
       if (totalQuantity) {
         await DynamicProductStockService.updateProductOOSByIngredient(Number(idIngredient));
