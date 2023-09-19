@@ -1,13 +1,14 @@
 const ServiceRepo = require('../repository/ServiceRepo');
 const CatalogServiceService = require('../service/CatalogService');
+const BucketService = require('../service/BucketService');
 
 class ServiceService {
-  async postService({ title, description, image, price, tags, status, catalogId }) {
+  async postService({ title, description, imageFile, price, tags, status, catalogId }) {
 
     let imageLocation = '';
     try {
-      if (image) {
-        const { location } = await BucketService.uploadFile(image);
+      if (imageFile) {
+        const { location } = await BucketService.uploadFile(imageFile);
         imageLocation = location;
       }
     } catch (error) {
@@ -36,11 +37,11 @@ class ServiceService {
     }
   }
 
-  async putService({ idService, title, price, image, description, tags, catalog_id, status }) {
+  async putService({ idService, title, price, imageFile, description, tags, catalog_id, status }) {
     let imageLocation = '';
     try {
-      if (image) {
-        const { location } = await BucketService.uploadFile(image);
+      if (imageFile) {
+        const { location } = await BucketService.uploadFile(imageFile);
         imageLocation = location;
       }
     } catch (error) {

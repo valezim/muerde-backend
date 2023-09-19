@@ -4,8 +4,9 @@ const ServiceService = require('../service/ServiceService');
 class ServiceController {
     static async postService(req, res) {
         try {
+            const imageFile = req.files?.image;
             const newService = humps.camelizeKeys(req.body);
-            const createdService = await ServiceService.postService(newService);
+            const createdService = await ServiceService.postService({ ...newService, imageFile });
             return res.json({ ...humps.decamelizeKeys(createdService) });
         } catch (error) {
             console.log(`Error - ServiceController :: postService - ${error}`);
