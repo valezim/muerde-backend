@@ -93,7 +93,7 @@ model Review {
 model Recipe {
   idRecipe               Int                @unique(map: "idRecipe_UNIQUE") @default(autoincrement())
   name                   String             @db.VarChar(250)
-  instructions           String             @db.VarChar(250)
+  instructions           String             @db.VarChar(2500)
   preparationTimeMinutes Int
   Product                Product?
   RecipeIngredient       RecipeIngredient[]
